@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>买金呗 CRM 后台管理</title>
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+    <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+    <!-- 框架及公用样式 -->
+    <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/hplus/css/animate.css" rel="stylesheet">
+    <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+    <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="report-telsaleReport">
+    <div id="loading">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+
+    <!-- 内容主体 -->
+    <div class="container-fluid hide" id="app">
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" id="aaselect" v-if="roles.teamId && roles.telRealName">
+                <div class="tel-box">
+                    <select class="tel-box" v-model="info.teamName">
+                        <option value="-1">电销组</option>
+                        <option v-for="item in group" :value="item.teamId">{{ item.teamName }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" v-if="roles.telRealName">
+                <div class="tel-box">
+                    <label>电销员</label>
+                    <input type="text" class="input-box-s date" v-model="info.realName">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <button class="search" @click="research">查询</button>
+                <button class="reset fold" @click="reset">重置</button>
+                <button class="reset" @click="exportFile">导出</button>
+            </div>
+        </div>
+
+        <table id="realtimeReport" lay-filter="realtimeReport"></table>
+    </div>
+    <!-- 内容主体 end-->
+
+    <!-- 全局js -->
+    <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+    <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../public/lib/vue.js"></script>
+
+    <!-- layui -->
+    <script src="../public/lib/layui/layui.js"></script>
+    <script src="../public/js/global.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../public/js/page/report/realtimeReport.js"></script>
+</body>
+
+</html>

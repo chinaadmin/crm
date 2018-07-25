@@ -1,0 +1,238 @@
+/**
+管理首页样式
+**/
+
+#side-menu{
+  li{
+    a{
+      border-left: 3px solid transparent;
+    }
+
+    &.active>a{
+      border-left: 3px solid #39D4D1;
+    }
+
+    ul.nav-second-level{
+      display: none;
+    }
+  }
+}
+
+//天润工具条样式
+.tr-tool{
+  position: relative;
+  padding: 10px;
+  background-color: #299b96;
+  text-align: center;
+  color: #f0f0f2;
+
+  i:hover{
+    cursor: pointer;
+  }
+
+  .navbar-minimalize{
+    position: absolute;
+    top:14px;
+    left:30px;
+
+    &.no-role{
+      position: relative;
+      top:0;
+      left:0;
+    }
+  }
+  
+  .tr-login{
+    padding: 8px 10px;
+    border-radius: 50%;
+    background-color: #178582;
+    border:none;
+    &:focus,&:active{
+      outline: none;
+    }
+
+    i{
+      color:#ffffff;
+    }
+  }
+
+  .tr-btn-group{
+    padding: 15px 0 0 0;
+    text-align: center;
+
+    i{
+      position: relative;
+      color: #f0f0f2;
+      display: inline-block;
+      margin: 0 10px;
+
+      &.disabled{
+        color: #c2c2c2;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+}
+
+.mini-navbar{
+
+  .tr-tool{
+
+    background-color: #178582;
+
+    .tr-login{
+      display: none;
+    }
+
+    .tr-btn-group{
+      display: none;
+    }
+
+    .navbar-minimalize{
+      position: relative;
+      top:0;
+      left:0;
+    }
+
+  }
+
+}
+
+//天润登录box
+.tr-login-box{
+  position: absolute;
+  top: 60px;
+  right: -300px;
+  padding: 25px 15px;
+  min-width: 300px;
+  background-color: #ffffff;
+  box-shadow: 3px 3px 3px #eeeeee;
+  border-radius: 0 5px 5px 0;
+
+  .fa-times{
+    position: absolute;
+    top:5px;
+    right: 5px;
+    color: #8d9199;
+  }
+
+  .login-btn-group{
+    text-align: center;
+
+    .btn{
+      padding: 10px 50px;
+      font-size: 14px;
+
+      &:hover,&:active,&:focus{
+        outline: none;
+      }
+    }
+  }
+
+}
+
+
+//首页代办事项提示
+#task-notice{
+  position: relative;
+
+  .roastingList{
+    position: absolute;
+    top: 20px;
+    left: 50px;
+
+    .fa{
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    #rechargeMarquee{
+      width: 300px;
+      font-size: 16px;
+      color: #f2891b;
+    }
+  }
+
+  ul{
+    float: right !important;
+    padding: 0 0;
+
+    li{
+      a{
+        margin: 0 0;
+        color: #52565c;
+      }
+
+      .count-info{
+        .label{
+          position: absolute;
+          top: 12px;
+          right: 2px;
+          padding: 0 5px;
+          min-width: 25px;
+          border-radius: 10px;
+          background-color: #F95E59;
+          font-size: 12px;
+          text-align: center;
+          color: #ffffff;
+          line-height: 20px;
+        }
+      }
+
+      .dropdown-menu{
+        border-radius: 5px;
+        width: 160px;
+
+        li:first-child{
+          a{
+            border-radius: 5px 5px 0 0;
+          }
+        }
+
+        li:last-child{
+          a{
+            border-radius: 0 0 5px 5px;
+          } 
+        }
+
+        li{
+
+          a{
+            padding: 8px 20px;
+            background-color: #3A4245;
+            border-radius: 0;
+            color: #f0f0f2;
+            font-size: 14px;
+            text-overflow: ellipsis;
+            overflow:hidden; 
+
+            &:hover,&:active,&:focus{
+              background-color: #2F373A;
+            }
+
+            .notice-title{
+              position: relative;
+
+              .notice-num{
+                position: absolute;
+                top: 0;
+                right: -5px;
+                padding: 0 5px;
+                min-width: 25px;
+                border-radius: 10px;
+                background-color: #F95E59;
+                font-size: 12px;
+                text-align: center;
+              }
+
+            }
+
+          }
+
+        }
+      }
+
+    }
+  }
+}

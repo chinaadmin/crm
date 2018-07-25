@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>买金呗 CRM 后台管理</title>
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+    <script>
+        // 当前页面如果不在iframe中，则返回后台管理首页
+        if (top == this) {
+            window.location.href = "../index.html";
+        }
+    </script>
+
+    <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+    <!-- 框架及公用样式 -->
+    <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/hplus/css/animate.css" rel="stylesheet">
+    <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+    <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerDetail-accountDetail">
+    <div id="loading">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+
+    <!-- 内容主体 -->
+    <div class="container-fluid range hide" id="app">
+        <div id="section">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">明细记录</li>
+                            <li>收益记录</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <div class="row" >
+                                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                                        <div class="tel-box">
+                                            <label>记录时间</label>
+                                            <input type="text" class="input-box-s big" id="recordStartTime"> –
+                                            <input type="text" class="input-box-s big" id="recordEndTime">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                                        <div id="aaselect" class="tel-box">
+                                        <select class="tel-box" v-model="detail.bizType">
+                                            <option value="-1">类型</option>
+                                            <option value="10">现金买入</option>
+                                            <option value="20">卖金</option>
+                                            <option value="30">定期金转入</option>
+                                            <option value="40">保价金转入</option>
+                                            <option value="50">活期转定期</option>
+                                            <option value="60">活期转保本</option>
+                                            <option value="70">新手金转入</option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                        <button type="button" class="search" @click="reSearch()">查询</button>
+                                        <button type="button" class="reset" @click="reSet()">重置</button>
+                                    </div>
+                                </div>
+                                <table id="currentDetail" lay-filter="currentDetail"></table>
+                            </div>
+                            
+                            <div class="layui-tab-item">
+                                <div class="row">
+                                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                                        <div class="tel-box">
+                                            <label>回款时间</label>
+                                            <input type="text" class="input-box-s big" id="returnStartTime"> –
+                                            <input type="text" class="input-box-s big" id="returnEndTime">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                        <button type="button" class="search" @click="inQuiry()">查询</button>
+                                        <button type="button" class="reset" @click="reBulid()">重置</button>
+                                    </div>
+                                </div>
+                                <table id="currentIncome" lay-filter="currentIncome"></table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 内容主体 end-->
+
+    <!-- 业务类型 -->
+    <script type="text/html" id="tp1">
+        {{# var type = {10:"买入",20:"卖出",21:"提金冻结",22:"提金解冻",23:"提金支出",30:"定期转金荷包",40:"保价转金荷包",50:"金荷包转定期",60:"金荷包转保价",70:"新手金转金荷包",80:"黄金红包",90:"特价金转金荷包"};
+            return type[d.bizType] || '';
+    }}
+    </script>
+
+    <!-- 流入 -->
+    <script type="text/html" id="tp2">
+        
+        {{# if(d.bizType == '10'){ }}
+               {{d.tradeGram}}
+          {{#}else if(d.bizType == '20'){ }}
+              
+         {{# }else if(d.bizType == '21'){ }}
+              
+         {{#}else if(d.bizType == '22'){ }}
+              {{d.tradeGram}}
+         {{#}else if(d.bizType == '23'){ }}
+              
+         {{#}else if(d.bizType == '30'){ }}
+             {{d.tradeGram}}
+         {{#}else if(d.bizType == '40'){ }}
+             {{d.tradeGram}} 
+         {{#}else if(d.bizType == '50'){ }}
+              
+         {{#}else if(d.bizType == '60'){ }}
+              
+         {{#}else if(d.bizType == '70'){ }}
+             {{d.tradeGram}}
+        {{#}else if(d.bizType == '80'){ }}
+             {{d.tradeGram}}
+        {{#}else if(d.bizType == '90'){ }}
+             {{d.tradeGram}}
+
+       {{# } }}
+    
+    </script>
+
+    <!-- 流出 -->
+    <script type="text/html" id="tp3">
+        {{# if(d.bizType == '10'){ }}
+                
+          {{#}else if(d.bizType == '20'){ }}
+            {{d.tradeGram}}
+         {{# }else if(d.bizType == '21'){ }}
+            {{d.tradeGram}}
+         {{#}else if(d.bizType == '22'){ }}
+              
+         {{#}else if(d.bizType == '23'){ }}
+              {{d.tradeGram}}
+         {{#}else if(d.bizType == '30'){ }}
+              
+         {{#}else if(d.bizType == '40'){ }}
+               
+         {{#}else if(d.bizType == '50'){ }}
+             {{d.tradeGram}}
+         {{#}else if(d.bizType == '60'){ }}
+             {{d.tradeGram}}
+         {{#}else if(d.bizType == '70'){ }}
+              
+        {{#}else if(d.bizType == '80'){ }}
+              
+        {{#}else if(d.bizType == '90'){ }}
+              
+
+       {{# } }}
+    </script>
+    <!-- 全局js -->
+    <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+    <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../public/lib/vue.js"></script>
+
+    <!-- layui -->
+    <script src="../public/lib/layui/layui.js"></script>
+    <script src="../public/js/global.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../public/js/page/customerDetail/currentDetail.js"></script>
+</body>
+
+</html>

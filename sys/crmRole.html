@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="sys-crmRole">
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div class="wrapper-content range hide" id="app">
+    <div class="row" id="section">
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div class="tel-box">
+          <select class="tel-box" v-model="info.isNew">
+            <option value="-1">客户类型</option>
+            <option value="10">新客户</option>
+            <option value="20">休眠客户</option>
+            <option value="30">注册有投资</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div class="tel-box">
+          <select class="tel-box" v-model="info.isRecommend">
+            <option value="-1">是否有推荐人</option>
+            <option value="10">无</option>
+            <option value="20">有</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div class="tel-box">
+          <select class="tel-box" v-model="info.channelName">
+            <option value="-1">渠道名称</option>
+            <option v-for="item in channelNameData" v-text="item"></option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <div class="tel-box">
+          <select class="tel-box" v-model="info.isIn">
+            <option value="-1">状态</option>
+            <option value="10">禁用</option>
+            <option value="20">启用</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-3 col-lg-md-3 col-sm-3 col-xs-12" v-if="roles.crmRuleQuery.authorised">
+        <button class="search" @click="search">查询</button>
+        <button class="reset" @click="reset">重置</button>
+      </div>
+      <div class="col-xs-12 m-t-sm" v-if="roles.crmruleAddUI.authorised">
+        <button class="revise m-b-sm" @click="addRule"><i class="fa fa-plus-circle p-r"></i>增加</button>
+      </div>
+    </div>
+    <table id="crmRole" lay-filter="crmRole"></table>
+    <!-- 新增CRMstart -->
+    <div style="position:absolute;left:-800000px">
+      <div class="range" id="rule">
+        <div id="section">
+          <div class="ruleBox">
+            <div class="row">
+            <div class="col-xs-12">
+              <div class="col-md-4 col-xs-6 tel-box-s">客户类型:</div>
+              <div class="col-md-7 col-xs-6">
+                <select class="field" v-model="addRuleData.isNew">
+                  <option value="10">新客户</option>
+                  <option value="20">休眠客户</option>
+                  <option value="30">注册有投资</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <div class="col-md-4 col-xs-6 tel-box-s">是否启用规则:</div>
+              <div class="col-md-7 col-xs-6">
+                <select class="field" v-model="addRuleData.isIn">
+                  <option value="20">启用</option>
+                  <option value="10">禁用</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <div class="col-md-4 col-xs-6 tel-box-s">是否有推荐人:</div>
+              <div class="col-md-7 col-xs-6">
+                <select class="field" v-model="addRuleData.isRecommend">
+                  <option value="20">有</option>
+                  <option value="10">无</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-12" v-if="addRuleData.isNew != 20">
+              <div class="col-md-4 col-xs-6 tel-box-s">注册天数:</div>
+              <div class="col-md-7 col-xs-6">
+                <input type="text" class="field" v-model="addRuleData.dayCount">
+              </div>
+            </div>
+            <div class="col-xs-12">
+              <div class="col-md-4 col-xs-6 tel-box-s">是否有渠道:</div>
+              <div class="col-md-7 col-xs-6">
+                <select class="field" v-model="channelBox">
+                  <option value=''>有</option>
+                  <option value="-1">无</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-12" v-if="channelBox == ''">
+              <div class="col-md-4 col-xs-6 tel-box-s">渠道名称:</div>
+              <div class="col-md-7 col-xs-6">
+                <input type="text" class="field" v-model="addRuleData.channelName"/>
+              </div>
+            </div>
+            <div class="col-xs-12" v-if="addRuleData.isNew !=10">
+              <div class="col-md-4 col-xs-6 tel-box-s">现金资产低于:</div>
+              <div class="col-md-7 col-xs-6">
+                <input type="text" class="field" v-model="addRuleData.accountAmount" />
+              </div> 
+            </div>
+            <div class="col-xs-12" v-if="addRuleData.isNew !=10">
+              <div class="col-md-4 col-xs-6 tel-box-s">黄金资产低于:</div>
+              <div class="col-md-7 col-xs-6">
+                <input type="text" class="field" v-model="addRuleData.totalGram" />
+              </div>
+            </div>
+            <div class="col-xs-12" v-if="addRuleData.isNew==20">
+              <div class="col-md-4 col-xs-6 tel-box-s">最近提现天数超过:</div>
+              <div class="col-md-7 col-xs-6">
+                <input type="text" class="field" v-model="addRuleData.lastDayCount"/>
+              </div>
+            </div>
+            <div class="col-xs-12 m-t-sm">
+              <div class="saveBtn">
+                <button class="search" class="search" @click="saveBtn" >保存</button>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 新增end -->
+    <!-- 修改start -->
+    <div style="position:absolute;left:-800000px">
+      <div class="range" id="reviseInfo">
+        <div id="section">
+          <div class="ruleBox">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="col-md-4 col-xs-6 tel-box-s">客户类型:</div>
+                <div class="col-md-7 col-xs-6">
+                  <p class="field" v-text="typeCN(changeInfoData.isNew)"></p>
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <div class="col-md-4 col-xs-6 tel-box-s">是否有推荐人:</div>
+                <div class="col-md-7 col-xs-6">
+                    <p class="field" v-text="recomendCN(changeInfoData.isRecommend)"></p>
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <div class="col-md-4 col-xs-6 tel-box-s">渠道名称:</div>
+                <div class="col-md-7 col-xs-6">
+                  <p class="field" v-text="channelData(changeInfoData.channelName)"></p>
+                </div>
+              </div>
+              <div class="col-xs-12" v-if="changeInfoData.isNew!='20'">
+                <div class="col-md-4 col-xs-6 tel-box-s">注册天数:</div>
+                <div class="col-md-7 col-xs-6">
+                  <input type="text" class="field" v-model="countData.dayCount">
+                </div>
+              </div>
+              <div class="col-xs-12" v-if="changeInfoData.isNew!='10'">
+                <div class="col-md-4 col-xs-6 tel-box-s">现金资产低于:</div>
+                <div class="col-md-7 col-xs-6">
+                  <input type="text" class="field" v-model="countData.accountAmount"/>
+                </div>
+              </div>
+              <div class="col-xs-12" v-if="changeInfoData.isNew!='10'">
+                <div class="col-md-4 col-xs-6 tel-box-s">黄金资产低于:</div>
+                <div class="col-md-7 col-xs-6">
+                  <input type="text" class="field" v-model="countData.totalGram"/>
+                </div>
+              </div>
+              <div class="col-xs-12" v-if="changeInfoData.isNew=='20'">
+                <div class="col-md-4 col-xs-6 tel-box-s">最近提现天数超过:</div>
+                <div class="col-md-7 col-xs-6">
+                  <input type="text" class="field" v-model="countData.lastDayCount" />
+                </div>
+              </div>
+              <div class="col-xs-12 m-t-sm">
+                <div class="saveBtn">
+                  <button class="search" @click="reviseBtn">修改</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 修改end -->
+  </div>
+  <!-- 内容主体 end-->
+  <script type="text/html" id="tp1">
+    {{# var isNew={10:'新客户',20:'休眠客户',30:'注册有投资'}; return isNew[d.isNew] || '';}};
+  </script>
+  <script type="text/html" id="tp2">
+    {{# var status = {10:'无',20:'有'}; return status[d.isRecommend] || ''}};
+  </script>
+  <script type="text/html" id="tp3">
+    {{# if(d.channelName === '-1'){ }}
+        无
+      {{# }else{ }}
+          {{d.channelName}}
+      {{# } }}
+  </script>
+  <script type="text/html" id="tp4">
+    {{# var status = {10:'禁用',20:'启用'};return status[d.isIn]||''}};
+  </script>
+  <script type="text/html" id="tp5">
+    {{# var time = d.createTime.split(' ')[0];return '<span '+ 'title="' + d.createTime + '">'+ time + '</span>'}}
+  </script>
+  <script type="text/html" id="tp6">
+     {{# if(d.updateTime){var time = d.updateTime.split(' ')[0];return '<span '+ 'title="' + d.updateTime + '">'+ time + '</span>'}; }}
+  </script>
+  <script type="text/html" id="barDemo">
+    {{# var status = { 10: '启用', 20: '禁用' }; return '<div class="limit"><div class="limitPage"><a class="layui-btn revise" lay-event="revise">修改</a><a class="layui-btn forbidden" lay-event="enable">' + status[d.isIn] + '</a></div></div>';}}
+  </script>
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/sys/crmRole.js"></script>
+</body>
+
+</html>

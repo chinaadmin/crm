@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+  <script>
+    // 当前页面如果不在iframe中，则返回后台管理首页
+    if (top == this) {
+      window.location.href = "../index.html";
+    }
+  </script>
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link rel="stylesheet" href="../public/lib/layui/css/modules/laydate/default/laydate.css">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerDetail-accountDetail">
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="app" class="container-fluid range hide m-t">
+    <div class="row" id="section">
+      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+        <div class="tel-box">
+          <label>交易日期</label>
+          <input type="text" id="recordStartTime" class="input-box-s big"> –
+          <input type="text" id="recordEndTime" class="input-box-s big">
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <select class="tel-box" v-model="table.flowType">
+            <option value="-1">流水类型</option>
+            <option value="30">收入</option>
+            <option value="40">支出</option>
+            <option value="10">冻结</option>
+            <option value="20">解冻</option>
+        </select>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+        <select class="tel-box" v-model="table.bizType">
+            <option value="-1">业务类型</option>
+            <option value="10">账户充值</option>
+            <option value="11">充值手续费</option>
+            <option value="12">充值手续费存入</option>
+            <option value="20">提现冻结</option>
+            <option value="21">提现解冻</option>
+            <option value="22">提现支出</option>
+            <option value="23">提现手续费支出</option>
+            <option value="24">提现手续费存入</option>
+            <option value="30">买金冻结</option>
+            <option value="31">买金解冻</option>
+            <option value="32">买金充值</option>
+            <option value="33">买金支出</option>
+            <option value="34">卖金存入</option>
+            <option value="35">卖金支出</option>
+            <option value="36">收益存入</option>
+            <option value="37">收益支出</option>
+            <option value="38">卖金手续费支出</option>
+            <option value="39">卖金手续费存入</option>
+            <option value="40">商户转账</option>
+            <option value="60">兑金冻结</option>
+            <option value="61">兑金解冻</option>
+            <option value="62">兑金存入</option>
+            <option value="63">兑金支出</option>
+            <option value="70">投资冻结</option>
+            <option value="71">投资解冻</option>
+            <option value="72">投资存入</option>
+            <option value="73">投资支出</option>
+            <option value="74">回收本金</option>
+            <option value="75">回收利息</option>
+            <option value="76">还款支出</option>
+            <option value="81">加息红包存入</option>
+            <option value="82">加息红包支出</option>
+            <option value="83">现金红包存入</option>
+            <option value="84">现金红包支出</option>
+            <option value="85">推荐奖励存入</option>
+            <option value="86">推荐奖励支出</option>
+        </select>
+      </div>
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+        <button type="button" class="search" @click="researchForm">查询</button>
+        <button type="button" class="reset" @click="resetForm">重置</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <table id="accountDetail" lay-filter="accountDetail"></table>
+      </div>
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/customerDetail/accountDetail.js"></script>
+</body>
+
+</html>

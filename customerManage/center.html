@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <script>
+    //当前页面如果不在iframe中，则返回后台管理首页
+    if (top == this) {
+      window.location.href = "../index.html";
+    }
+  </script>
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/lib/select2/select2.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerManage-center">
+
+  <!-- loading -->
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid hide">
+    <div class="row">
+      <!-- tab start-->
+      <div class="col-xs-12">
+        <ul class="tab-ul">
+          <li v-if="roles.unAssign.authorised" :class="{active: tabState == 1}" :data-id="roles.unAssign.id" data-tabstate="1" @click.stop="tabToggle(1,roles.unAssign.id)">未分配</li>
+          <li v-if="roles.assign.authorised" :class="{active: tabState == 2}" :data-id="roles.assign.id" data-tabstate="2" @click.stop="tabToggle(2,roles.assign.id)">已分配</li>
+          <li v-if="roles.recycle.authorised" :class="{active: tabState == 3}" :data-id="roles.recycle.id" data-tabstate="3" @click.stop="tabToggle(3,roles.recycle.id)">回收</li>
+          <li v-if="roles.all.authorised" :class="{active: tabState == ''}" :data-id="roles.all.id" data-tabstate="" @click.stop="tabToggle('',roles.all.id)">全部</li>
+        </ul>
+      </div>
+      <!-- tab end-->
+
+      <!-- query-form start-->
+      <section class="col-xs-12 range query-form" :class="{mini: queryMini === true}">
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <div class="form-item">
+            <label>手机</label>
+            <input class="input-box" type="text" name="" v-model="query.cstMobile">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <div class="form-item">
+            <label>姓名</label>
+            <input class="input-box" type="text" name="" v-model="query.cstName">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <select class="form-item" v-model="query.cstSex">
+              <option value="-1">性别</option>
+              <option value="10">男</option>
+              <option value="20">女</option>
+            </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <div class="form-item">
+            <label>年龄范围</label>
+            <input class="input-box-s small" type="text" maxlength="3" v-model="query.cstStartAge"> –
+            <input class="input-box-s small" type="text" maxlength="3" v-model="query.cstEndAge">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <div class="form-item">
+            <label>归属地</label>
+            <input class="input-box" type="text" v-model="query.homeLocation">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <div class="form-item">
+            <label>客户分组</label>
+            <input class="input-box" type="text" v-model="query.groupName">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <select class="form-item" v-model="query.cstState">
+            <option value="-1">客户状态</option>
+            <option value="10">未实名</option>
+            <option value="20">未投资</option>
+            <option value="30">已投资</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <select class="form-item" v-model="query.isNew">
+            <option value="-1">客户类型</option>
+            <option value="0">新客户</option>
+            <option value="1">休眠客户</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm" v-show="tabState != 1">
+          <div class="form-item">
+            <label>组别专员</label>
+            <input class="input-box" type="text" readonly @click="openSelectTeam" v-model="groupCommissioner">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>账户总额</label>
+            <input class="input-box-s big" type="text" v-model="query.accountStartBalance"> –
+            <input class="input-box-s big" type="text" v-model="query.accountEndBalance">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>注册时间</label>
+            <input id="registerStratDate" class="input-box-s querydate" type="text"> –
+            <input id="registerEndDate" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>首投时间</label>
+            <input id="firstStartDate" class="input-box-s querydate" type="text"> –
+            <input id="firstEndDate" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>首次投定</label>
+            <input id="firstRegularBuyTimeStart" class="input-box-s querydate" type="text"> –
+            <input id="firstRegularBuyTimeEnd" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>登录时间</label>
+            <input id="loginStartDate" class="input-box-s querydate" type="text"> –
+            <input id="loginEndDate" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>登录次数</label>
+            <input class="input-box-s big" type="text" v-model="query.loginNumberStart"> –
+            <input class="input-box-s big" type="text" v-model="query.loginNumberEnd">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm" v-show="tabState == 2 || tabState == ''">
+          <div class="form-item">
+            <label>调配时间</label>
+            <input id="allocateStartDate" class="input-box-s querydate" type="text"> –
+            <input id="allocateEndDate" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>充值时间</label>
+            <input id="rechargeStartDate" class="input-box-s querydate" type="text"> –
+            <input id="rechargeEndDate" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm">
+          <select class="form-item" name="" v-model="query.rechargeState">
+            <option value="-1">充值状态</option>
+            <option value="21">充值成功</option>
+            <option value="22">充值失败</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm text-center" v-show="tabState != 1">
+          <select class="form-item" v-model="query.nvestmentIntent">
+            <option value="-1">投资意向</option>
+            <option value="1">高意向</option>
+            <option value="2">低意向</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="col-xs-6 p-none">
+            <select class="form-item" v-model="query.followResultType">
+              <option value="-1">跟进状态</option>
+              <option value="1">待跟进</option>
+              <option value="2">成交</option>
+              <option value="3">无效</option>
+            </select>
+          </div>
+          <div class="col-xs-6 p-r-none">
+            <select class="form-item" v-model="query.followResult">
+              <option value="-1" selected>跟进结果</option>
+              <option value="21" v-if="query.followResultType == 1">关机/无人接听</option>
+              <option value="22" v-if="query.followResultType == 1">不方便接听</option>
+              <option value="23" v-if="query.followResultType == 1">不需要/拒绝</option>
+              <option value="24" v-if="query.followResultType == 1">跟家人/朋友商量</option>
+              <option value="25" v-if="query.followResultType == 1">考虑/对比</option>
+              <option value="26" v-if="query.followResultType == 1">促成/高意向</option>
+              <option value="27" v-if="query.followResultType == 1">暂时不考虑/拒绝</option>
+              <option value="11" v-if="query.followResultType == 2">新转化</option>
+              <option value="12" v-if="query.followResultType == 2">深挖</option>
+              <option value="31" v-if="query.followResultType == 3">空号/错号</option>
+              <option value="32" v-if="query.followResultType == 3">黑名单</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm" v-show="tabState != 1">
+          <div class="form-item">
+            <label>跟进次数</label>
+            <input class="input-box-s big" type="text" v-model="query.followStartTimes"> –
+            <input class="input-box-s big" type="text" v-model="query.followEndTimes">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm" v-show="tabState != 1">
+          <div class="form-item">
+            <label>上次回访</label>
+            <input id="visitStartDate" class="input-box-s querydate" type="text"> –
+            <input id="visitEndDate" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm" v-show="tabState == 3 || tabState == ''">
+          <select class="form-item" v-model="query.recycleType">
+            <option value="-1">回收类型</option>
+            <option value="1">总监回收</option>
+            <option value="2">转组回收</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 m-b-sm" v-show="tabState != 1">
+          <select id="lastFollower" class="form-item">
+            <option></option>
+            <option value="-1">无</option>
+            <option v-for="item in lastFollowerArr" :value="item.realName" v-text="item.realName"></option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="col-xs-4 p-none">
+            <select class="form-item" v-model="query.channelType">
+              <option value="-1">渠道</option>
+              <option value="10">有 - 渠道</option>
+              <option value="20">无 - 渠道</option>
+            </select>
+          </div>
+          <div class="col-xs-8 p-r-none">
+            <input class="form-item" type="text" v-model="query.channelName" :disabled="query.channelType == -1">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="col-xs-4 p-none">
+            <select class="form-item" v-model="query.recommenderType">
+              <option value="-1">推荐人</option>
+              <option value="10">有 - 推荐人</option>
+              <option value="20">无 - 推荐人</option>
+            </select>
+          </div>
+          <div class="col-xs-8 p-r-none">
+            <input class="form-item" type="text" v-model="query.recommenderName" :disabled="query.recommenderType == -1">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="col-xs-6 p-none">
+            <select class="form-item" v-model="query.orderName">
+              <option value="-1">排序列</option>
+              <option value="1">账户总额</option>
+              <option value="2">最近登录时间</option>
+              <option value="3">上次回访时间</option>
+              <option value="4">首次投资时间</option>
+            </select>
+          </div>
+          <div class="col-xs-6 p-r-none">
+            <select class="form-item" v-model="query.orderby">
+              <option value="-1">排序方式</option>
+              <option value="-1">降序</option>
+              <option value="2">升序</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2 m-b-sm text-center">
+          <select class="form-item" v-model="query.p2pImport">
+            <option value="-1">P2P导入</option>
+            <option value="10">是 - P2P导入</option>
+            <option value="20">否 - P2P导入</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2 m-b-sm text-center" v-show="tabState == 2 || tabState == ''">
+          <select class="form-item" v-model="query.centlibState">
+            <option value="-1">团队状态</option>
+            <option value="1">未分配</option>
+            <option value="2">已分配</option>
+            <option value="3">回收</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2 m-b-sm text-center" v-show="tabState == 2 || tabState == ''">
+          <select class="form-item" v-model="query.allocateType">
+            <option value="-1">分配类型</option>
+            <option value="1">人工分配</option>
+            <option value="2">绑定分配</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2 m-b-sm text-center">
+          <select class="form-item" v-model="query.intoType">
+            <option value="-1">来源</option>
+            <option value="5">同步</option>
+            <option value="7">外部客户导入</option>
+            <option value="8">买金呗客户导入</option>
+          </select>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 m-b-sm">
+          <div class="form-item">
+            <label>进入时间</label>
+            <input id="createTimeStart" class="input-box-s querydate" type="text"> –
+            <input id="createTimeEnd" class="input-box-s querydate" type="text">
+          </div>
+        </div>
+
+      </section>
+      <!-- query-form end-->
+
+      <!-- query-btn-group start-->
+      <div class="col-xs-12" v-if="tabRoles.unAssignBtnQuery && tabRoles.unAssignBtnQuery.authorised">
+        <button class="q-btn pr" type="button" @click="queryTable">查询</button>
+        <button class="q-btn" type="button" @click="resetQuery">重置</button>
+        <span class="toggle-query" @click="queryToggle">
+          折叠 <i class="fa fa-lg" :class="{'fa-angle-down':queryMini === true,'fa-angle-up':queryMini === false}"></i>
+        </span>
+      </div>
+
+      <div class="col-xs-12" v-if="tabRoles.assignBtnQuery && tabRoles.assignBtnQuery.authorised">
+        <button class="q-btn pr" type="button" @click="queryTable">查询</button>
+        <button class="q-btn" type="button" @click="resetQuery">重置</button>
+        <span class="toggle-query" @click="queryToggle">
+          折叠 <i class="fa fa-lg" :class="{'fa-angle-down':queryMini === true,'fa-angle-up':queryMini === false}"></i>
+        </span>
+      </div>
+
+      <div class="col-xs-12" v-if="tabRoles.recycleBtnQuery && tabRoles.recycleBtnQuery.authorised">
+        <button class="q-btn pr" type="button" @click="queryTable">查询</button>
+        <button class="q-btn" type="button" @click="resetQuery">重置</button>
+        <span class="toggle-query" @click="queryToggle">
+          折叠 <i class="fa fa-lg" :class="{'fa-angle-down':queryMini === true,'fa-angle-up':queryMini === false}"></i>
+        </span>
+      </div>
+
+      <div class="col-xs-12" v-if="tabRoles.allBtnQuery && tabRoles.allBtnQuery.authorised">
+        <button class="q-btn pr" type="button" @click="queryTable">查询</button>
+        <button class="q-btn" type="button" @click="resetQuery">重置</button>
+        <span class="toggle-query" @click="queryToggle">
+          折叠 <i class="fa fa-lg" :class="{'fa-angle-down':queryMini === true,'fa-angle-up':queryMini === false}"></i>
+        </span>
+      </div>
+      <!-- query-btn-group end-->
+
+      <div class="col-xs-12">
+        <hr>
+      </div>
+
+      <!--account start-->
+      <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 account">
+        <p>账户总额(元)</p>
+        <h2 v-text="account.accountAmount"></h2>
+      </div>
+      <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 account">
+        <p>账户余额(元)</p>
+        <h2 v-text="account.usableBalance"></h2>
+      </div>
+      <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 account">
+        <p>黄金克重(克)</p>
+        <h2 v-text="account.totalGram"></h2>
+      </div>
+      <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 account">
+        <p>金荷包克重(克)</p>
+        <h2 v-text="account.currentGram"></h2>
+      </div>
+      <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 account">
+        <p>待收总额(元)</p>
+        <h2 v-text="account.risefallHold"></h2>
+      </div>
+      <!--account end-->
+
+      <!-- control start-->
+      <!-- 未分配 -->
+      <div class="col-xs-12" v-show="tabState == 1">
+        <button class="q-btn pr" type="button" @click="action('selected')" v-if="tabRoles.unAssignBtnSelected && tabRoles.unAssignBtnSelected.authorised">调配选中</button>
+        <button class="q-btn" type="button" @click="action('all')" v-if="tabRoles.unAssignBtnSelectedAll && tabRoles.unAssignBtnSelectedAll.authorised">调配全部({{count}})</button>
+        <button class="q-btn" type="button" @click="exportExcel" v-if="tabRoles.unAssignBtnExport && tabRoles.unAssignBtnExport.authorised">导出</button>
+        <button class="q-btn pr" type="button" @click="openGroupSetsWin" v-if="tabRoles.unAssignBtnGroupingSets && tabRoles.unAssignBtnGroupingSets.authorised">分组设置</button>
+      </div>
+      <!-- 未分配 end-->
+
+      <!-- 已分配 -->
+      <div class="col-xs-12" v-show="tabState == 2">
+        <button class="q-btn pr" type="button" @click="action('selected')" v-if="tabRoles.assignBtnSelected && tabRoles.assignBtnSelected.authorised">调配选中</button>
+        <button class="q-btn" type="button" @click="action('all')" v-if="tabRoles.assignBtnSelectedAll && tabRoles.assignBtnSelectedAll.authorised">调配全部({{count}})</button>
+        <button class="q-btn pr" type="button" @click="recoveryCustomer(1)" v-if="tabRoles.assignBtRecycle && tabRoles.assignBtRecycle.authorised">回收</button>
+        <button class="q-btn" type="button" @click="recoveryAll" v-if="tabRoles.assignBtRecycleAll && tabRoles.assignBtRecycleAll.authorised">一键回收</button>
+        <button class="q-btn" type="button" @click="exportExcel" v-if="tabRoles.assignBtnExport && tabRoles.assignBtnExport.authorised">导出</button>
+        <button class="q-btn pr" type="button" @click="openGroupSetsWin" v-if="tabRoles.assignBtnGroupingSets && tabRoles.assignBtnGroupingSets.authorised">分组设置</button>
+      </div>
+      <!-- 已分配 end-->
+
+      <!-- 回收 -->
+      <div class="col-xs-12" v-show="tabState == 3">
+        <button class="q-btn pr" type="button" @click="action('selected')" v-if="tabRoles.recycleBtnSelected && tabRoles.recycleBtnSelected.authorised">调配选中</button>
+        <button class="q-btn" type="button" @click="action('all')" v-if="tabRoles.recycleBtnSelectedAll && tabRoles.recycleBtnSelectedAll.authorised">调配全部({{count}})</button>
+        <button class="q-btn" type="button" @click="exportExcel" v-if="tabRoles.recycleBtnExport && tabRoles.recycleBtnExport.authorised">导出</button>
+        <button class="q-btn pr" type="button" @click="openGroupSetsWin" v-if="tabRoles.recycleBtnGroupingSets && tabRoles.recycleBtnGroupingSets.authorised">分组设置</button>
+      </div>
+      <!-- 回收 end-->
+
+      <!-- 全部 -->
+      <div class="col-xs-12" v-show="tabState == ''">
+        <button class="q-btn pr" type="button" @click="recoveryCustomer(2)" v-if="tabRoles.allBtnComRecycle && tabRoles.allBtnComRecycle.authorised">公司回收</button>
+        <button class="q-btn" type="button" @click="exportExcel" v-if="tabRoles.allExportBtn && tabRoles.allExportBtn.authorised">导出</button>
+        <button id="import" class="q-btn pr" type="button" @click="openImportWin" v-if="tabRoles.allBtnExport && tabRoles.allBtnExport.authorised">导入</button>
+        <button class="q-btn" type="button" @click="openGroupSetsWin" v-if="tabRoles.allBtnGroupingSets && tabRoles.allBtnGroupingSets.authorised">分组设置</button>
+      </div>
+      <!-- 全部 end-->
+
+      <!-- control end-->
+
+
+      <!-- dataTable start-->
+      <div class="col-xs-12">
+        <table id="dataTable" lay-filter="dataTable"></table>
+      </div>
+      <!-- dataTable end-->
+
+
+      <!-- 组别及组员数据 -->
+      <div id="treeBox" style="position:absolute;left:-500px;">
+        <div id="selectTeam">
+          <vtree ref="vtree" :rowdata="teamData" :showchild="false" :callback="selectTeam"></vtree>
+        </div>
+      </div>
+      <!-- 组别及组员数据 end-->
+
+      <!--分组弹窗-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="groupBox">
+          <div class="col-xs-12 m-t">
+            <table id="dataTable2" lay-filter="dataTable2"></table>
+          </div>
+          <div class="col-xs-12 text-center m-t m-b">
+            <button class="btn btn-primary" type="button" @click="saveGroupSets">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--分组弹窗 end-->
+
+      <!--客户导入弹窗-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="remind">
+          <div class="col-xs-12 text-center m-t">
+            <div class="col-xs-5 text-center">
+              <label class="input-label">客户来源</label>
+            </div>
+            <select class="col-xs-7 input-select" v-model="importType">
+              <option value="1">买金呗客户</option>
+              <option value="2">外部客户</option>
+            </select>
+          </div>
+          <div class="col-xs-12 m-t">
+            <div class="col-xs-5 text-center">
+              <label class="input-label">选择文件</label>
+            </div>
+            <input class="col-xs-7" type="file" id="exportExcel" name="myfiles" v-if="tabRoles.allBtnExport && tabRoles.allBtnExport.authorised">
+          </div>
+          <div class="col-xs-12 text-center m-t m-b">
+            <button class="btn btn-primary" type="button" @click="importExcel">导入</button>
+          </div>
+        </div>
+      </div>
+      <!--客户导入弹窗 end-->
+
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+
+  <!-- dataTble tp start-->
+  <script type="text/html" id="tp1">
+    {{# if(d.mobilePhone){ return '<a>'+d.mobilePhone.substring(0,3) + '****' + d.mobilePhone.substring(7,11)+'</a>'; }else{ return ''; } }}
+  </script>
+
+  <script type="text/html" id="tp2">
+    {{# var sex = { 10:'男', 20:'女' }; return sex[d.gender] || ''; }}
+  </script>
+
+  <script type="text/html" id="tp3">
+    {{# var ResultType = { 0:"未跟进", 11:"成交-新转化", 12:"成交-深挖", 21:"待跟进-关机/无人接听", 22:"待跟进-不方便接听", 23:"待跟进-不需要/拒绝", 24:"待跟进-跟家人/朋友商量", 25:"待跟进 考虑/对比", 26:"待跟进-促成/高意向", 27:"待跟进 暂时不考虑/拒绝", 31:"无效-空号/错号", 32:"无效-黑名单", }; return ResultType[d.followUpResult] || '';
+    }}
+  </script>
+
+  <script type="text/html" id="tp4">
+    {{# var time = ''; if(d.registerTime) {time = d.registerTime.split(' ')[0]} ; return '<span '+ 'title="' + d.registerTime + '">'+ time + '</span>'; }}
+  </script>
+
+  <script type="text/html" id="tp5">
+    {{# var time = ''; if(d.buyFirstTime) {time = d.buyFirstTime.split(' ')[0]} ; return '<span '+ 'title="' + d.buyFirstTime + '">'+ time + '</span>'; }}
+  </script>
+
+  <script type="text/html" id="tp6">
+    {{# var time = ''; if(d.lastFollowTime) {time = d.lastFollowTime.split(' ')[0]} ; return '<span '+ 'title="' + d.lastFollowTime + '">'+ time + '</span>'; }}
+  </script>
+
+  <script type="text/html" id="tp7">
+    {{# var time = ''; if(d.lastDate) {time = d.lastDate.split(' ')[0]} ; return '<span '+ 'title="' + d.lastDate + '">'+ time + '</span>'; }}
+  </script>
+
+  <script type="text/html" id="tp8">
+    {{# var time = ''; if(d.distributeTime) {time = d.distributeTime.split(' ')[0]} ; return '<span '+ 'title="' + d.distributeTime + '">'+ time + '</span>'; }}
+  </script>
+
+  <script type="text/html" id="tp9">
+    {{# var time = ''; if(d.firstRegularBuyTime) {time = d.firstRegularBuyTime.split(' ')[0]} ; return '<span '+ 'title="' + d.firstRegularBuyTime + '">'+ time + '</span>'; }}
+  </script>
+
+  <script type="text/html" id="tp10">
+    {{# var time = ''; if(d.firstCallTime) {time = d.firstCallTime.split(' ')[0]} ; return '<span '+ 'title="' + d.firstCallTime + '">'+ time + '</span>'; }}
+  </script>
+
+  <script type="text/html" id="tp11">
+    {{# if(d.intoType == 7){ return '外部客户导入'; }else if(d.intoType == 8){ return '买金呗客户导入'; }else{ return '同步'; } }}
+  </script>
+
+  <script type="text/html" id="tp12">
+    {{# var time = ''; if(d.createTime) {time = d.createTime.split(' ')[0]} ; return '<span '+ 'title="' + d.createTime + '">'+ time + '</span>'; }}
+  </script>
+
+  <!-- dataTble tp end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/select2/select2.full.js"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/components/vue-tree.js"></script>
+  <script src="../public/js/page/customerManage/center.js"></script>
+</body>
+
+</html>

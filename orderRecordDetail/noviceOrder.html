@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>买金呗 CRM 后台管理</title>
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+  <script>
+    // 当前页面如果不在iframe中，则返回后台管理首页
+    if (top == this) {
+        window.location.href = "../index.html";
+    }
+</script>
+
+    <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+    <!-- 框架及公用样式 -->
+    <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/hplus/css/animate.css" rel="stylesheet">
+    <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+    <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="orderRecordDetail-bullionOrder">
+    <div id="loading">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+    <!-- 内容主体 -->
+    <div class="container-fluid range hide" id="app">
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" id="aaselect">
+                <div class="tel-box">
+                    <select class="tel-box" v-model="table.payStatus">
+                        <option value="">状态</option>
+                        <option value="10">待支付</option>
+                        <option value="20">支付成功(托管中)</option>
+                        <option value="30">支付失败</option>
+                        <option value="40">已结算</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                <div class="tel-box">
+                    <label>购买时间</label>
+                    <input type="text" class="input-box-s big" id="buyStartTime"> –
+                    <input type="text" class="input-box-s big" id="buyEndTime">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <button type="button" class="search" @click="research()">查询</button>
+                <button type="button" class="reset" @click="reset()">重置</button>
+            </div>
+        </div>
+        <table id="noviceOrder" lay-filter="noviceOrder"></table>
+    </div>
+    <!-- 内容主体 end-->
+    <!-- 回款方式 -->
+    <script type="text/html" id="tpforth">
+        {{# var productType = {20:"按日付息，到期还金",30:"到期一次性还金付息",60:"到期一次性还金付息"};
+            return productType[d.productType] || '';
+            }}
+    </script>
+    <!-- 支付方式 -->
+    <script type="text/html" id="tpfirst">
+        {{# var payMethod = {10:"现金",20:"易宝网银",30:"现金+网银",40:"活期转入",50:"定期转入",60:"保本转入",70:"易宝快捷",80:"现金+快捷",90:"黄金红包"};
+            return payMethod[d.payMethod] || '';
+    }}
+    </script>
+    <!-- 交易状态 -->
+    <script type="text/html" id="tpsecond">
+        {{# var payStatus = {5:"待确认",10:"待支付",15:"支付中",20:"支付成功(托管中)",40:"已结算",90:"确认超时",93:"支付超时",94:"产品变更",96:"支付失败",98:"超过限额",99:"用户取消"};
+
+            return payStatus[d.payStatus] || '';
+    }}
+    </script>
+    <!-- 买入终端 -->
+    <script type="text/html" id="tpthird">
+        {{# var clientType = {10:"PC",20:"微信",30:"WAP",40:"APP",41:"Android",42:"IOS",50:"系统后台"};
+            return clientType[d.clientType] || '' ;
+    }}
+    </script>
+    <!-- 全局js -->
+    <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+    <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../public/lib/vue.js"></script>
+
+    <!-- layui -->
+    <script src="../public/lib/layui/layui.js"></script>
+    <script src="../public/js/global.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../public/js/page/orderRecordDetail/noviceOrder.js"></script>
+</body>
+
+</html>

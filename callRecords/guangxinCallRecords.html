@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="callRecords-recordsview">
+
+  <!-- loading -->
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid hide">
+    <div class="row">
+
+      <!-- search start-->
+      <div class="col-xs-12 col-md-6 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">客户号码</label>
+        </div>
+        <input class="col-xs-8 input-item" type="text" maxlength="11" v-model="query.mobilePhone">
+      </div>
+
+      <div class="col-xs-12 col-md-6 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">真实姓名</label>
+        </div>
+        <input class="col-xs-8 input-item" type="text" maxlength="11" v-model="query.realName">
+      </div>
+
+      <div class="col-xs-12 col-md-6 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">外呼时间</label>
+        </div>
+        <input id="outboundTimeStart" class="col-xs-3 input-item p-none querydate" type="text" v-model="query.outboundTimeStart">
+        <span class="col-xs-2 sper">-</span>
+        <input id="outboundTimeEnd" class="col-xs-3 input-item p-none querydate" type="text" v-model="query.outboundTimeEnd">
+      </div>
+
+      <div class="col-xs-12 col-md-6 col-lg-3 m-t text-center">
+        <button class="search-btn m-r" type="button" @click="searchData">查询</button>
+        <button class="search-btn reset m-r" type="button" @click="reset">重置</button>
+        <button class="search-btn reset" type="button" @click="exportExcel">导出</button>
+      </div>
+      <!-- search end-->
+
+      <div class="col-xs-12 m-t">
+        <table id="dataTable" lay-filter="dataTable"></table>
+      </div>
+
+      <!--录音播放-->
+      <div style="position:absolute;left:-500px;">
+        <div id="playBox">
+          <div class="col-xs-12 m-t m-b text-center">
+            <audio controls style="width:100%;">
+              <source :src="recordFileUrl" type="audio/mp3">
+              <embed height="30" width="100" :src="recordFileUrl" /> 您的浏览器不支持 audio 元素。
+            </audio>
+          </div>
+        </div>
+      </div>
+      <!--录音播放 end-->
+
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+
+  <script type="text/html" id="tp1">
+    {{# if(!d.gender || d.gender == '0'){ return ''; }else{ return d.gender == '10' ? '男' : '女'; } }}
+  </script>
+
+  <script type="text/html" id="tp2">
+    {{# return d.callType == '10' ? '外呼' : '呼入'; }}
+  </script>
+
+  <script type="text/html" id="tp3">
+    {{# return d.callDuration + '秒'; }}
+  </script>
+
+  <script type="text/html" id="toolbar">
+    {{# return '
+    <i class="fa fa-play m-r" lay-event="play"></i>
+    <i class="fa fa-cloud-download" lay-event="download"></i>'; }}
+  </script>
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/callRecords/guangxinCallRecords.js"></script>
+</body>
+
+</html>

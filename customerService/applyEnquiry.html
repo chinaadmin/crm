@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>买金呗 CRM 后台管理</title>
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+    <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+    <!-- 框架及公用样式 -->
+    <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/hplus/css/animate.css" rel="stylesheet">
+    <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+    <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="applyEnquiry">
+
+    <!-- 内容主体 -->
+    <div class="container-fluid" id="app">
+        <div class="row">
+            <div class="all search-box center left">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-12">
+                <input type="text" placeholder="客户手机号/客户名称" class="input-box all" v-model="table.phoneOrName">
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <ul class="changeBox">
+                    <li :class="{active:tabState == 1}" @click.stop="tabToggle(1)">
+                        <span class="promise"></span><span>变更申请</span>
+                        <i :class="{info:tabState == 1}"></i>
+                    </li>
+                    <li :class="{active:tabState == 2}" @click.stop="tabToggle(2)">
+                        <span class="promise"></span><span>转账充值申请</span>
+                        <i :class="{info:tabState == 2}"></i>
+                    </li>
+                    
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <button class="search" @click="searchData">
+                    <i class="fa fa-search"></i>
+                    搜索</button>
+            </div>
+            <div class="col-xs-12 m-t" id="aa">
+                <table id="changeTable" lay-filter="changeTable"></table>
+            </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- 内容主体 end-->
+
+    <!-- 模板 -->
+    <script type="text/html" id="tp10">
+        {{# return '<a><i class="fa fa-volume-control-phone" style="color:#299b96;"></i></a>'; }}
+    </script>
+    <script type="text/html" id="tp9">
+        {{# var fn = function(){d.mobilePhone=d.mobilePhone.substring(0,3)+'****'+d.mobilePhone.substring(7,11)}; fn();return '<a>'+d.mobilePhone+'</a>'}}
+    </script>
+    <script type="text/html" id="tp1">
+        {{#var type={10:'手机号码变更', 20:'银行卡解绑', 30:'提金身份认证'};return type[d.applyType]||''}};
+    </script>
+    <script type="text/html" id="tp2">
+        {{# var type={10:'人工变更',20:'系统变更'}; return type[d.changeType]||''}};
+    </script>
+    <script type="text/html" id="tp3">
+        {{# 
+            var status = {10:'身份证过期',20:'照片清晰度不够',30:'身份证人物照片不一致',40:'银行卡与绑定银行卡不符合'};
+            if(d.auditStatus=='40'){return '<div>审核失败原因:<a>'+ status[d.failType] +'</a></div>'};
+            var type={10:'待审批',20:'审批中',30:'审批通过'};return type[d.auditStatus] || '';      
+    }}
+    </script>
+    <script type="text/html" id="tp5">
+        {{# var type={10:'PC',20:'微信',30:'WAP',40:'APP',41:'Android',42:'IOS',50:'系统后台'};return type[d.clientType] || ''}};
+    </script>
+    <script type="text/html" id="tp6">
+        {{# var type={1:'变更申请',2:'转账充值申请'}; return type[d.euquiryType]||''}};
+    </script>
+    <script type="text/html" id="tp7">
+        {{# var type={50:'线下转账充值'}; return type[d.payMethod]}}
+    </script>
+    <script type="text/html" id="tp8">
+            {{# var type={10:"待支付",21:'充值成功',22:"充值失败",30:'已失效',40:'审批中',41:'审批完成',42:'审批不通过'};return type[d.rechargeStatus] || ''}};
+    </script>
+
+    <!-- 全局js -->
+    <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+    <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+
+    <!-- Vue -->
+    <script src="../public/lib/vue.js"></script>
+
+    <!-- layui -->
+    <script src="../public/lib/layui/layui.js"></script>
+    <script src="../public/js/global.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../public/js/page/customerService/applyEnquiry.js"></script>
+</body>
+
+</html>

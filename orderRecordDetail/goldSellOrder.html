@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>买金呗 CRM 后台管理</title>
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+  <script>
+    // 当前页面如果不在iframe中，则返回后台管理首页
+    if (top == this) {
+        window.location.href = "../index.html";
+    }
+</script>
+
+    <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+    <!-- 框架及公用样式 -->
+    <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/hplus/css/animate.css" rel="stylesheet">
+    <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+    <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="orderRecordDetail-bullionOrder">
+    <div id="loading">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+    <!-- 内容主体 -->
+    <div class="container-fluid range hide" id="app">
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" id="aaselect">
+                <div class="tel-box">
+                    <select class="tel-box" v-model="table.orderStatus">
+                        <option value="">状态</option>
+                        <option value="10">待确认</option>
+                        <option value="20">待支付</option>
+                        <option value="25">支付中</option>
+                        <option value="30">已支付</option>
+                        <option value="40">待发货</option>
+                        <option value="50">已发货</option>
+                        <option value="60">确认超时</option>
+                        <option value="61">支付超时</option>
+                        <option value="62">产品变更</option>
+                        <option value="70">已取消</option>
+                        <option value="80">已退款</option>
+                        <option value="90">已完成</option>
+                        <option value="99">支付失败</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                <div class="tel-box">
+                    <label>购买时间</label>
+                    <input type="text" class="input-box-s big" id="buyStartTime"> –
+                    <input type="text" class="input-box-s big" id="buyEndTime">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <button type="button" class="search" @click="research()">查询</button>
+                <button type="button" class="reset" @click="reset()">重置</button>
+            </div>
+        </div>
+        <table id="goldSellOrder" lay-filter="goldSellOrder"></table>
+     </div>
+    <!-- 内容主体 end-->
+    <!-- 是否开票 -->
+    <script id="tpfirst" type="text/html">
+        {{# var invoiceFlag={10:"是", 20: "否"};
+            return invoiceFlag[d.invoiceFlag] || '';
+    }}
+    </script>
+    <!-- 交易状态 -->
+    <script id="tpsecond" type="text/html">
+        {{# var orderStatus={10:"待确认", 20:"待支付", 25:"支付中", 30:"已支付", 40:"待发货", 50:"已发货", 60:"确认超时", 61:"支付超时", 62:"产品变更", 70:"已取消", 80:"已退款", 90:"已完成", 99:"支付失败"};
+            return orderStatus[d.orderStatus] || '';
+    }}
+    </script>
+    <!-- 是否已发货 -->
+    <script id="tpthird" type="text/html">
+        {{# var expressFlag = {10:"否",20:"是"};
+            return expressFlag[d.expressFlag] || '';
+    }}
+    </script>
+    <!-- 提金终端 -->
+    <script id="tpforth" type="text/html">
+        {{# var clientType = {10:"PC",20:"微信",30:"WAP",40:"APP",41:"Android",42:"IOS",50:"系统后台"};
+            return clientType[d.clientType] || '';
+    }}
+    </script>
+    <!-- 全局js -->
+    <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+    <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../public/lib/vue.js"></script>
+
+    <!-- layui -->
+    <script src="../public/lib/layui/layui.js"></script>
+    <script src="../public/js/global.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../public/js/page/orderRecordDetail/goldSellOrder.js"></script>
+
+</body>
+
+</html>

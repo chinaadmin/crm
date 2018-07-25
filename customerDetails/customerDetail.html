@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerDetail">
+
+  <!-- 内容主体 -->
+  <div id="content" class="wrapper-content hide">
+
+    <div class="row text-center" v-if="userInfo == null">
+      <h3>当前用户不存在</h3>
+    </div>
+
+    <div class="row" v-else>
+
+      <!-- 基本信息 start-->
+      <div class="col-xs-12">
+        <div class="col-xs-12 title m-b-xs">
+          基本信息<span class="info" v-text="crmInfo"></span>
+          <button class="reload m-r" type="button" @click="refreshUserInfo">
+            <i class="fa fa-refresh"></i>刷新
+          </button>
+          <button class="reload m-r" type="button" v-if="roles.transfer.authorised" @click="transferFn">
+            <i class="fa fa-volume-control-phone"></i>转拨
+          </button>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">手机号码</div>
+          <div class="col-xs-6 td">
+            <span v-text="userInfo.mobilePhone"></span>
+            <button class="call-btn" type="button" v-if="roles.callTelphone.authorised" @click="callout(userInfo.mobilePhone)">
+              <i class="fa fa-volume-control-phone"></i>呼叫
+            </button>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">真实姓名</div>
+          <div class="col-xs-6 td" v-text="userInfo.realName"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">性别</div>
+          <div class="col-xs-6 td" v-text="male"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">年龄</div>
+          <div class="col-xs-6 td" v-text="userInfo.age"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">客户状态</div>
+          <div class="col-xs-6 td" v-text="customerStatus"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">手机归属地</div>
+          <div class="col-xs-6 td" v-text="userInfo.mobilePhoneLocation"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">投资次数</div>
+          <div class="col-xs-6 td" v-text="userInfo.buyCount"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">登录次数</div>
+          <div class="col-xs-6 td" v-text="userInfo.loginCount"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">是否合时代用户</div>
+          <div class="col-xs-6 td" v-text="userInfo.p2pCustomerId != null ? '是':'否'"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">合时代用户名</div>
+          <div class="col-xs-6 td" v-text="userInfo.p2pUsername"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">直接推荐人</div>
+          <div class="col-xs-6 td" v-text="userInfo.referrerId"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr" v-if="userInfo.channelName != '-'">
+          <div class="col-xs-6 td item-title">渠道</div>
+          <div class="col-xs-6 td" v-text="userInfo.channelName"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">登录控制</div>
+          <div class="col-xs-6 td" v-text="userInfo.customerStatus == 10 ? '正常':'禁用'"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">账号状态</div>
+          <div class="col-xs-6 td" v-if="userInfo.accountStatus == 10">
+            正常/<span v-text="userInfo.limitStatus"></span>
+          </div>
+          <div class="col-xs-6 td" v-else>
+            限制/<span v-text="userInfo.limitStatus"></span>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr" v-if="userInfo.identityAuthentication != '-'">
+          <div class="col-xs-6 td item-title">身份认证</div>
+          <div class="col-xs-6 td" v-text="userInfo.cusStatus == 10 ? '否':'是'"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr" v-if="userInfo.idcardNo != '-'">
+          <div class="col-xs-6 td item-title">身份证号码</div>
+          <div class="col-xs-6 td" v-text="userInfo.idcardNo"></div>
+        </div>
+      </div>
+      <!-- 基本信息 end-->
+
+      <!-- 时间信息 start-->
+      <div class="col-xs-12 m-t">
+        <div class="col-xs-12 title m-b-xs">
+          时间信息
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">注册时间</div>
+          <div class="col-xs-6 td" v-text="userInfo.registerTime"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">首次充值</div>
+          <div class="col-xs-6 td" v-text="userInfo.rechargeFirstTime"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">首次投资</div>
+          <div class="col-xs-6 td" v-text="userInfo.buyFirstTime"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">最近登录时间</div>
+          <div class="col-xs-6 td" v-text="userInfo.lastDate"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">最近充值</div>
+          <div class="col-xs-6 td" v-text="userInfo.lastRechargeTime"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">最近投资</div>
+          <div class="col-xs-6 td" v-text="userInfo.lastInvestTime"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">上次回访</div>
+          <div class="col-xs-6 td" v-text="userInfo.lastFollowTime"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">最近提现</div>
+          <div class="col-xs-6 td" v-text="userInfo.lastWithdrawTime"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">实名时间</div>
+          <div class="col-xs-6 td" v-text="userInfo.realnameTime"></div>
+        </div>
+      </div>
+      <!-- 时间信息 end-->
+
+      <!-- 资产信息 start-->
+      <div class="col-xs-12 m-t">
+        <div class="col-xs-12 title m-b-xs">
+          资产信息
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">资产总额</div>
+          <div class="col-xs-6 td" v-text="userInfo.accountAmount"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">可用余额</div>
+          <div class="col-xs-6 td" v-text="userInfo.usableBalance"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">冻结金额</div>
+          <div class="col-xs-6 td" v-text="userInfo.freezeBalance"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">黄金总克重(含稳盈)</div>
+          <div class="col-xs-6 td" v-text="userInfo.totalGram"></div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 tr">
+          <div class="col-xs-6 td item-title">黄金冻结资产</div>
+          <div class="col-xs-6 td">0.000</div>
+        </div>
+
+      </div>
+      <!-- 资产信息 end-->
+
+      <!-- 电销跟进 start-->
+      <div class="col-xs-12 m-t" v-if="roles.customerVisitView.authorised && target != 'center' && target != 'team' && target != 'search'">
+        <div class="col-xs-12 title m-b-xs">
+          电销跟进
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 tr">
+          <div class="col-xs-4 td item-title">回访结果</div>
+          <div class="col-xs-4 td">
+            <select class="form-item" v-model="followResultType">
+              <option value="-1">跟进状态</option>
+              <option value="1">待跟进</option>
+              <option value="2">成交</option>
+              <option value="3">无效</option>
+            </select>
+          </div>
+          <div class="col-xs-4 td">
+            <select class="form-item" v-model="followResult">
+              <option value="-1" selected>跟进结果</option>
+              <option value="21" v-if="followResultType == 1">关机/无人接听</option>
+              <option value="22" v-if="followResultType == 1">不方便接听</option>
+              <option value="23" v-if="followResultType == 1">不需要/拒绝</option>
+              <option value="24" v-if="followResultType == 1">跟家人/朋友商量</option>
+              <option value="25" v-if="followResultType == 1">考虑/对比</option>
+              <option value="26" v-if="followResultType == 1">促成/高意向</option>
+              <option value="27" v-if="followResultType == 1">暂时不考虑/拒绝</option>
+              <option value="11" v-if="followResultType == 2">新转化</option>
+              <option value="12" v-if="followResultType == 2">深挖</option>
+              <option value="31" v-if="followResultType == 3">空号/错号</option>
+              <option value="32" v-if="followResultType == 3">黑名单</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 tr">
+          <div class="col-xs-6 td item-title">下次回访预约时间</div>
+          <div class="col-xs-6 td">
+            <input id="nextVisitTime" class="date" type="text" placeholder="请选择时间">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 tr">
+          <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4 td item-title">投资意向</div>
+          <div class="col-xs-6 col-sm-6 col-md-8 col-lg-8 td">
+            <select v-model="nvestmentIntent">
+              <option value="-1">投资意向</option>
+              <option value="1">高意向</option>
+              <option value="2">低意向</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 tr">
+          <div class="col-xs-6 td item-title">主动放弃</div>
+          <div class="col-xs-6 td">
+            <input type="checkbox" v-model="isGiveUp" :true-value="1" :false-value="0" :disabled="followResultType == 3">
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 tr remark">
+          <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4 td item-title">备注</div>
+          <div class="col-xs-6 col-sm-8 col-md-8 col-lg-8 td item-content">
+            <textarea rows="3" maxlength="100" placeholder="可以输入100字" v-model="followRemark"></textarea>
+          </div>
+        </div>
+
+        <div class="col-xs-12 tr m-t text-center">
+          <button class="save-btn" type="button" @click="saveReturnVisitRecord">保存</button>
+        </div>
+
+      </div>
+      <!-- 电销跟进 end-->
+
+      <!-- 客服跟进 start-->
+      <div class="col-xs-12 m-t" v-if="roles.customerFollow.authorised">
+        <div class="col-xs-12 title m-b-xs">
+          客服跟进
+        </div>
+
+        <div class="col-xs-12 tr">
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 td item-title">电话分类</div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 td">
+            <select v-model="telSelected1">
+              <option :value="{'id':'-1','name':''}" selected>请选择</option>
+              <option v-for="item in telOptions1" :value="{'id':item.id,'name':item.levelName}" v-text="item.levelName"></option>
+            </select>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 td">
+            <select v-model="telSelected2">
+              <option :value="{'id':'-1','name':''}">请选择</option>
+              <option v-for="item in telOptions2" :value="{'id':item.id,'name':item.levelName}" v-text="item.levelName"></option>
+            </select>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 td">
+            <select v-model="telSelected3">
+              <option :value="{'id':'-1','name':''}">请选择</option>
+              <option v-for="item in telOptions3" :value="{'id':item.id,'name':item.levelName}" v-text="item.levelName"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 tr remark">
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3 td item-title">备注</div>
+          <div class="col-xs-6 col-sm-8 col-md-9 col-lg-9 td item-content">
+            <textarea rows="3" maxlength="100" placeholder="可以输入100字" v-model="remark"></textarea>
+          </div>
+        </div>
+
+        <div class="col-xs-12 tr m-t text-center">
+          <button class="save-btn" type="button" @click="saveCustomerReturn">保存</button>
+        </div>
+
+      </div>
+      <!-- 客服跟进 end-->
+
+      <!-- 账户记录相关tab start-->
+      <div class="col-xs-12 m-t">
+        <div class="layui-tab layui-tab-brief" lay-filter="tab">
+          <ul class="layui-tab-title">
+            <li v-if="roles.customerFollowerRecord.authorised" data-src="./followerRecord.html?customerId=">客服跟进</li>
+            <li v-if="roles.callRecord.authorised" data-src="./callRecord.html?customerId=">电销跟进</li>
+            <li v-if="roles.customer_query_bankcard.authorised" data-src="./cardRecord.html?customerId=">绑卡记录</li>
+            <li v-if="roles.distributionRecord.authorised" data-src="./distributionRecord.html?customerId=">调配记录</li>
+            <li v-if="roles.assetView.authorised" data-src="./assetView.html?customerId=">资产总览</li>
+            <li v-if="roles.customer_account_detail.authorised" data-src="./accountDetail.html?customerId=">资金明细</li>
+            <li v-if="roles.customer_current_detail.authorised" data-src="./currentDetail.html?customerId=">金荷包明细</li>
+            <li v-if="roles.customerRechargeRecord.authorised" data-src="./rechargeRecord.html?customerId=">资金流入记录</li>
+            <li v-if="roles.customerWithdrawRecord.authorised" data-src="./withdrawRecord.html?customerId=">提现记录</li>
+            <li v-if="roles.couponRecord.authorised" data-src="./coupouRecord.html?customerId=">红包记录</li>
+            <li v-if="roles.customer_query_orderRecord.authorised" data-src="./orderRecord.html?customerId=">订单信息</li>
+            <li v-if="roles.customer_query_prizeRecord.authorised" data-src="./prizeRecord.html?customerId=">奖品记录</li>
+          </ul>
+          <div class="layui-tab-content">
+            <div class="layui-tab-item" v-if="roles.customerFollowerRecord.authorised">
+              <iframe id="followerRecord" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.callRecord.authorised">
+              <iframe id="callRecord" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.customer_query_bankcard.authorised">
+              <iframe id="cardRecord" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.distributionRecord.authorised">
+              <iframe id="distributionRecord" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.assetView.authorised">
+              <iframe id="assetView" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.customer_account_detail.authorised">
+              <iframe id="accountDetail" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.customer_current_detail.authorised">
+              <iframe id="currentDetail" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.customerRechargeRecord.authorised">
+              <iframe id="rechargeRecord" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.customerWithdrawRecord.authorised">
+              <iframe id="withdrawRecord" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.couponRecord.authorised">
+              <iframe id="coupouRecord" class="page"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.customer_query_orderRecord.authorised">
+              <iframe id="orderRecord" class="page" height="490px" scrolling="auto"></iframe>
+            </div>
+            <div class="layui-tab-item" v-if="roles.customer_query_prizeRecord.authorised">
+              <iframe id="prizeRecord" class="page"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 账户记录相关tab end-->
+
+    </div>
+
+  </div>
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/customerDetail/customerDetail.js"></script>
+</body>
+
+</html>

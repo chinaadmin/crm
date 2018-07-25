@@ -1,0 +1,114 @@
+/**
+客户详情样式
+**/
+
+#customerDetail{
+  .layui-tab-content {
+    padding: 0!important;
+  }
+
+  .title{
+    font-size: 14px;
+    color: #8d9199;
+
+    .info{
+      color: #f2891b;
+    }
+
+    .reload{
+      float: right;
+      right:0;
+      background-color: transparent;
+      border:none;
+      color: #299b96;
+
+      .fa{margin-right: 5px;}
+    }
+  }
+
+  .tr{
+    padding: 0 0;
+
+    .td{
+      min-height: 32px;
+      // padding:10px 0;
+      color: #52565c;
+      border: 1px solid #f7f7f7;
+      text-align: center;
+      font-size: 14px;
+      line-height: 27px;
+
+      &.item-title{
+        position: relative;
+        font-weight: bold;
+        background-color: #fbfcfe;
+        border-right: none;
+        border-left: none;
+      }
+
+      .call-btn{
+        background-color: transparent;
+        border:none;
+        font-size: 12px;
+
+        .fa{
+          margin-right:5px;
+          color: #299b96;
+        }
+      }
+
+      select{
+        width:100%;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: url("../images/arrow.png") no-repeat scroll 98% 50% #ffffff;
+        padding: 0 18px;
+        border:none;
+        &:hover,&:active,&:focus{
+          outline: none;
+        }
+      }
+
+      .date{
+        border:none;
+        text-align: center;
+      }
+
+    }
+
+    &.remark{
+      .item-title{
+        height: 100px;
+        line-height: 80px;
+      }
+      .item-content{
+        height: 100px;
+
+        textarea{
+          width: 100%;
+          height: 94%;
+          padding: 0 5px;
+          resize: none;
+          border:none;
+        }
+      }
+    }
+
+    .save-btn{
+      padding: 5px 15px;
+      border-radius: 50px;
+      box-shadow: none;
+      border: 1px solid #f2891b;
+      font-size: 14px;
+      color: #f2891b;
+      background-color: #ffffff;
+    }
+  }
+
+  .page{
+    width:100%;
+    border:none;
+  }
+
+}

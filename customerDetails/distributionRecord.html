@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+  <script>
+    // 当前页面如果不在iframe中，则返回后台管理首页
+    if (top == this) {
+      window.location.href = "../index.html";
+    }
+  </script>
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body>
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid hide">
+    <div class="row">
+      <div class="col-xs-12">
+        <table id="distributionRecord" lay-filter="distributionRecord"></table>
+      </div>
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+  <script type="text/html" id="type">
+    {{# var type={0:'人工分配',1:'自然转化',2:'公司回收',3:'离职回收',4:'绑定分配',5:'中心库回收',6:'团队库回收',7:'电销员放弃',8:'员工推荐补录回收',9:'转组回收'}; return type[d.type]||''; }}
+  </script>
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/customerDetail/distributionRecord.js"></script>
+</body>
+
+</html>

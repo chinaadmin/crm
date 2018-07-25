@@ -1,0 +1,114 @@
+/**
+工具或插件特定样式
+**/
+
+//弹窗样式重置
+.crm-model{
+  .layui-layer-title{
+    text-align: center;
+    padding: 0 0;
+  }
+
+  .layui-layer-btn .layui-layer-btn0{
+    background-color: #299b96;
+    border-color: #299b96;
+    color: #FFFFFF;
+  }
+}
+
+//表格复选框样式重置
+.layui-form-checked[lay-skin=primary] i {
+  border-color: #299b96;
+  background-color: #299b96;
+  color: #fff;
+}
+
+//表格分页位置调整
+.layui-table-view .layui-table-page{
+  text-align: right;
+}
+
+//tab active样式重置
+.layui-this{
+  color:#299b96 !important;
+
+  &:after{
+    border-bottom: 2px solid #299b96 !important;
+  }
+}
+
+//table间距压缩
+.layui-table-cell{
+  padding:0 2px;
+}
+
+
+//vue树形插件样式
+#v-tree{
+  width: 100%;
+
+  ul{
+
+    li{
+
+      .tree-title{
+        padding:10px 30px;
+        border-bottom:  1px solid #f0f0f2;
+
+        span:hover{cursor: pointer;}
+
+        &>div{
+          display: inline-block;
+          &.lf{width:60%;}
+          &.rt{
+            width:30%;
+            text-align: center;
+
+            input[type="checkbox"]{
+              vertical-align: sub;
+            }
+          }
+        }
+  
+        .fa{
+          margin: 0 5px;
+        }
+
+      }
+
+      .tree-content{
+        li{
+          padding:10px 30px;
+          border-bottom:  1px solid #f0f0f2;
+
+          span:hover{cursor: pointer;}
+
+          &>div{
+            display: inline-block;
+            &.lf{
+              padding-left:30px;
+              width:60%;
+            }
+            &.rt{
+              width:30%;
+              text-align: center;
+  
+              input[type="checkbox"]{
+                vertical-align: sub;
+              }
+            }
+          }
+        }
+      }
+
+    }
+
+  }
+}
+
+//loading
+#loading{
+  position: absolute;
+  top:50%;
+  left:45%;
+}

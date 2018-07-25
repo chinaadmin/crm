@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="public/hplus/css/animate.css" rel="stylesheet">
+  <link href="public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="public/style/output.css">
+</head>
+
+<body>
+
+  <!-- 内容主体 -->
+  <div class="wrapper-content">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="middle-box text-center">
+          <h3 class="font-bold">这里是页面内容</h3>
+
+          <div class="error-desc">
+            您可以在这里添加栅格，参考首页及其他页面完成不同的布局
+            <br/>
+            <a id="openPage" href="#" class="btn btn-primary m-t">打开主页</a>
+            <a id="call" href="#" class="btn btn-primary m-t">外呼测试</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table id="demo" lay-filter="test"></table>
+  </div>
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+
+  <!-- layui -->
+  <script src="public/lib/layui/layui.js"></script>
+  <script src="public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script>
+    layui.use(['layer', 'table', 'conf', 'utilFn'], function() {
+
+      var layer = layui.layer;
+      var table = layui.table;
+      var conf = layui.conf;
+      var interface = layui.interface;
+      var utilFn = layui.utilFn;
+
+      console.log(conf);
+
+      //第一个实例
+      var t = table.render({
+        elem: '#demo',
+        url: 'http://www.layui.com/demo/table/user/',
+        page: {
+          layout: ['prev', 'page', 'next', 'count']
+        },
+        cols: [
+          [ //表头
+            {
+              type: 'checkbox',
+              fixed: 'left'
+            }, {
+              field: 'username',
+              title: '用户名',
+              width: 80,
+              fixed: 'left'
+            }, {
+              field: 'id',
+              title: 'ID',
+              width: 80,
+              sort: true
+            }, {
+              field: 'sex',
+              title: '性别',
+              width: 80,
+              sort: true
+            }, {
+              field: 'city',
+              title: '城市',
+              width: 80
+            }, {
+              field: 'sign',
+              title: '签名',
+              width: 177
+            }, {
+              field: 'experience',
+              title: '积分',
+              width: 80,
+              sort: true
+            }, {
+              field: 'score',
+              title: '评分',
+              width: 80,
+              sort: true
+            }, {
+              field: 'classify',
+              title: '职业',
+              width: 80
+            }, {
+              field: 'wealth',
+              title: '财富',
+              width: 135,
+              sort: true
+            }
+          ]
+        ]
+      });
+
+
+      $('#openPage').click(function() {
+
+        layer.open({
+          type: 2,
+          title: '客户详情',
+          skin: 'crm-model',
+          maxmin: true,
+          area: ['90%', '90%'],
+          shadeClose: true,
+          content: 'http://www.heshidai.com?userId=123',
+        });
+
+      })
+
+      $('#call').click(function() {
+
+        window.parent.callout('15766989756');
+
+      })
+    });
+  </script>
+</body>
+
+</html>

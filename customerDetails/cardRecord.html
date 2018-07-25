@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>买金呗 CRM 后台管理</title>
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+    <script>
+        // 当前页面如果不在iframe中，则返回后台管理首页
+        if (top == this) {
+            window.location.href = "../index.html";
+        }
+    </script>
+
+    <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+    <!-- 框架及公用样式 -->
+    <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/hplus/css/animate.css" rel="stylesheet">
+    <link rel="stylesheet" href="../public/lib/layui/css/modules/laydate/default/laydate.css">
+    <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+    <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerDetail-cardRecord">
+    <div id="loading">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+
+    <!-- 内容主体 -->
+    <div id="app" class="container-fluid range hide m-t">
+        <div class="row" id="section">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="tel-box">
+                    <label>银行卡号</label>
+                    <input type="text"  class="input-box" v-model="info.cardNo">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="tel-box">
+                    <label>所属银行</label>
+                    <input type="text" class="input-box" v-model="info.bankName">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12" id="aaselect">
+                <select class="tel-box" v-model="info.cardStatus">
+                    <option value="">绑卡状态</option>
+                    <option value="10">初始</option>
+                    <option value="21">成功</option>
+                    <option value="22">失败</option>
+                    <option value="23">已解绑</option>
+                </select>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <button type="button" class="search" v-on:click="researchTable">查询</button>
+                <button type="button" class="reset" v-on:click="resetTable">重置</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <table id="cardRecord" lay-filter="cardRecord"></table>
+            </div>
+        </div>
+    </div>
+    <!-- 内容主体 end-->
+    <!-- 模板 -->
+    <script type="text/html" id="tp1">
+        {{# var status={10:"初始",21:"成功",22:"失败",23:"已解绑"}; return status[d.cardStatus] || '';}}
+    </script>
+    <!-- 全局js -->
+    <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+    <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../public/lib/vue.js"></script>
+
+    <!-- layui -->
+    <script src="../public/lib/layui/layui.js"></script>
+    <script src="../public/js/global.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../public/js/page/customerDetail/cardRecord.js"></script>
+</body>
+
+</html>

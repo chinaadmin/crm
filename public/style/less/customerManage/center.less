@@ -1,0 +1,206 @@
+/**
+中心库,团队库样式
+**/
+
+#customerManage-center,#customerManage-team{
+
+  #content{
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .tab-ul{
+      li{
+        display: inline-block;
+        padding: 10px 30px;
+        font-size: 14px;
+        color: #52565c;
+  
+        &:hover{
+          cursor: pointer;
+        }
+  
+        &.active{
+          color: #f2891b;
+          border-bottom:2px solid #f2891b;
+        }
+  
+      }
+    }
+  
+    @media screen and (min-width: 768px) {
+      .tab-ul{
+        li{padding:10px 30px;}
+      }
+    }
+  
+    @media screen and (max-width: 768px) {
+      .tab-ul{
+        li{padding:10px 10px;}
+      }
+    }
+    .range {
+      margin-top: 10px;
+    }
+    .query-form{
+      height: auto;
+      overflow: hidden;
+
+      &.mini{
+        height: 90px
+      }
+
+      select{
+        font-weight: 700;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: url("../images/arrow.png") no-repeat scroll 98% 50% #8d9199;
+        padding-right: 14px;
+        &:hover,&:active,&:focus{
+          outline: none;
+        }
+      }
+  
+      .form-item{
+        width:100%;
+        height:35px;
+        padding: 8px 10px;
+        background-color: #f0f0f2;
+        border: none;
+        border-radius: 5px;
+        color: #8d9199;
+
+        &:hover,&:active,&:focus{
+          outline: none;
+        }
+
+        &[disabled]{
+          opacity: 0.5;
+        
+          &:hover{
+            cursor: not-allowed;
+          }
+        }
+
+        .input-check{   
+          display: inline-block;
+          vertical-align: middle;
+          margin: 1px 2px;
+        }
+
+        .input-check-text{
+          display: inline-block;
+          vertical-align: middle;
+          margin: 1px 2px;
+        }
+
+        .input-box{
+          width: 65%;
+          // margin:0 10px;
+          padding: 0 5px;
+          border:none;
+          background-color: #f0f0f2;
+        }
+  
+        .input-box-s{
+          width: 25%;
+          // margin:0 10px;
+          padding: 0 5px;
+          border:none;
+          background-color: #f0f0f2;
+          text-align: center;
+
+          &.small{
+            width:25%;
+          }
+
+          &.big{
+            width: 38%;
+            @media screen and (max-width: 768px) {
+              width: 30%;
+            }
+          }
+
+          &.date{
+            width:75%;
+            padding: 0 0;
+            font-size: 12px;
+            @media screen and (min-width: 1366px) {
+              width: 80%;
+            }
+          }
+
+          &.querydate{
+            width: 38%;
+            @media screen and (max-width: 768px) {
+              width: 30%;
+            }
+          }
+        }
+
+        //重置select2样式
+        .select2-selection__rendered{
+          line-height: normal !important;
+          font-weight: 700;
+          color: #8d9199;
+        }
+
+        .select2-selection__arrow b{
+          margin-top: 0;
+        }
+
+      }
+  
+    }
+
+    .q-btn{
+      margin:4px 15px;
+      padding: 10px 50px;
+      border-radius: 50px;
+      box-shadow: none;
+      border: 1px solid #f2891b;
+      font-size: 14px;
+      color: #f2891b;
+      background-color: #ffffff;
+
+      @media screen and (max-width: 768px) {
+        padding: 8px 20px;
+      }
+
+
+      &.pr{
+        background-color: #f2891b;
+        color: #ffffff;
+      }
+    }
+
+    .toggle-query{
+      font-size: 14px;
+
+      &:hover{
+        cursor: pointer;
+      }
+    }
+
+    hr{
+      margin: 10px 0;
+    }
+
+    .account{
+      p{
+        margin: 7px 0;
+        padding: 0 15px;
+      }
+      h2{
+        padding: 0 15px;
+      }
+    }
+
+
+    input[type="file"]{
+      display: inline-block;
+      width: 200px;
+    }
+  }
+
+}

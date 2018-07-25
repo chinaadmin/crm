@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="categories">
+
+  <!-- loading -->
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid hide">
+    <div class="row">
+
+      <div class="col-xs-12 m-t m-b">
+        <button class="btn m-r" type="button" v-if="roles.newLevelOne.authorised" @click="createType('',0)">新建一级分类</button>
+        <button class="btn white" type="button" v-if="roles.exportLevel.authorised" @click="exportExcel">导出</button>
+      </div>
+
+      <div class="col-sm-12 col-md-10 col-lg-10 m-b">
+
+        <div class="tree">
+          <div class="child">
+            <div class="td1">来电类型</div>
+            <div class="td2">创建时间</div>
+            <div class="td3">统计次数</div>
+            <div class="td4">操作</div>
+          </div>
+          <div v-for="item in telTypeList">
+            <!-- 一级分类 start-->
+            <div class="child">
+              <div class="td1 tree1">
+                <i class="fa" :class="{'fa-plus-square-o':activeArr.indexOf(item.id) == -1,'fa-minus-square-o':activeArr.indexOf(item.id) != -1}" v-if="item.children" @click="toggleChild(item.id)"></i>
+                <span class="type-title" v-text="item.levelName" @click="toggleChild(item.id)"></span>
+              </div>
+              <div class="td2" v-text="item.createDate"></div>
+              <div class="td3" v-text="item.countNum"></div>
+              <div class="td4">
+                <button class="btn small m-r" type="button" v-if="roles.telTypeRename.authorised" @click="createType(item.id,1)">重命名</button>
+                <button class="btn small m-r" type="button" v-if="roles.telTypeAddChild.authorised" @click="createType(item.id,2)">创建子类别</button>
+                <button class="btn small white" type="button" v-if="roles.telTypeRemove.authorised" @click="delType(item.id)">删除</button>
+              </div>
+            </div>
+            <!-- 一级分类 end-->
+
+            <!-- 二级分类 start-->
+            <div v-if="item.children" v-for="child in item.children">
+              <div class="child" v-show="activeArr.indexOf(item.id) != -1">
+                <div class="td1 tree2">
+                  <i class="fa" :class="{'fa-plus-square-o':activeArr.indexOf(child.id) == -1,'fa-minus-square-o':activeArr.indexOf(child.id) != -1}" v-if="child.children" @click="toggleChild(child.id)"></i>
+                  <span class="type-title" v-text="child.levelName" @click="toggleChild(child.id)"></span>
+                </div>
+                <div class="td2" v-text="child.createDate"></div>
+                <div class="td3" v-text="child.countNum"></div>
+                <div class="td4">
+                  <button class="btn small m-r" type="button" v-if="roles.telTypeRename.authorised" @click="createType(child.id,1)">重命名</button>
+                  <button class="btn small m-r" type="button" v-if="roles.telTypeAddChild.authorised" @click="createType(child.id,2)">创建子类别</button>
+                  <button class="btn small white" type="button" v-if="roles.telTypeRemove.authorised" @click="delType(child.id)">删除</button>
+                </div>
+              </div>
+
+              <!-- 三级分类 start-->
+              <div v-if="child.children" v-for="last in child.children">
+                <div class="child" v-show="activeArr.indexOf(item.id) != -1 && activeArr.indexOf(child.id) != -1">
+                  <div class="td1 tree3">
+                    <i class="fa fa-plus-square-o" v-if="last.children"></i>
+                    <span class="type-title" v-text="last.levelName"></span>
+                  </div>
+                  <div class="td2" v-text="last.createDate"></div>
+                  <div class="td3" v-text="last.countNum"></div>
+                  <div class="td4">
+                    <button class="btn small m-r" type="button" v-if="roles.telTypeRename.authorised" @click="createType(last.id,1)">重命名</button>
+                    <button class="btn small white" type="button" v-if="roles.telTypeRemove.authorised" @click="delType(last.id)">删除</button>
+                  </div>
+                </div>
+              </div>
+              <!-- 三级分类 end-->
+            </div>
+            <!-- 二级分类 end-->
+          </div>
+        </div>
+
+      </div>
+
+      <!--新建编辑弹窗-->
+      <div style="position:absolute;left:-500px;">
+        <div id="editBox">
+          <div class="col-xs-12 m-t m-b">
+            <label class="col-xs-5 input-label" v-text="editType+'名称'"></label>
+            <input class="col-xs-7 input-item" type="text" v-model="typeName">
+          </div>
+          <div class="col-xs-12 m-t text-center">
+            <button class="btn btn-primary" type="button" @click="saveEdit">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--新建编辑弹窗 end-->
+
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/categories/telType.js"></script>
+</body>
+
+</html>

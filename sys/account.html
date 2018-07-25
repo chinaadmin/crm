@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="remind">
+
+  <!-- loading -->
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid hide">
+    <div class="row">
+
+      <!-- search start-->
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">账号名</label>
+        </div>
+        <input class="col-xs-8 input-item" type="text" v-model="query.loginName">
+      </div>
+
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">真实姓名</label>
+        </div>
+        <input class="col-xs-8 input-item" type="text" v-model="query.realName">
+      </div>
+
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">团队</label>
+        </div>
+        <input class="col-xs-8 input-item" type="text" v-model="query.teamName">
+      </div>
+
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t text-center">
+        <button class="search-btn m-r" type="button" v-if="roles.accountQueryUI.authorised" @click="searchData">查询</button>
+        <button class="search-btn reset m-r" type="button" v-if="roles.accountQueryUI.authorised" @click="reset">重置</button>
+      </div>
+
+      <div class="col-xs-12 col-md-8 col-lg-8 m-t text-center">
+        <button class="search-btn m-r" type="button" v-if="roles.accountUpdateRoleUI.authorised" @click="changeRole">角色授权</button>
+        <button class="search-btn reset m-r" type="button" v-if="roles.accountUpdateTeamUI.authorised" @click="changeTeam">设置团队</button>
+        <button class="search-btn m-r" type="button" v-if="roles.setChannelNumber.authorised" @click="changeChannelNum">设置渠道号</button>
+        <button class="search-btn reset m-r" type="button" v-if="roles.addAccount.authorised" @click="addAccount">新增账号</button>
+        <button class="search-btn m-r" type="button" v-if="roles.resetPassword.authorised" @click="changePwd">重置密码</button>
+        <button class="search-btn reset m-r" type="button" v-if="roles.accountRestrictLogin.authorised" @click="updateLoginStatus(1)">限制登录</button>
+        <button class="search-btn m-r" type="button" v-if="roles.accountRelieveRestrict.authorised" @click="updateLoginStatus(0)">解除限制</button>
+      </div>
+      <!-- search end-->
+
+      <div class="col-xs-12 m-t">
+        <table id="dataTable" lay-filter="dataTable"></table>
+      </div>
+
+      <!--坐席号-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="bindingBox">
+          <div class="col-xs-12 m-t m-b">
+            <div class="col-xs-4 text-center">
+              <label class="input-label">坐席号</label>
+            </div>
+            <input class="col-xs-8 input-item" type="text" v-model="bindingNo">
+          </div>
+          <div class="col-xs-12 text-center m-t">
+            <button class="btn btn-primary" type="button" @click="changeSeatNo(0)">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--坐席号 end-->
+
+      <!--角色弹窗-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="roleBox">
+          <div class="col-xs-12 m-t">
+            <table id="dataTable2" lay-filter="dataTable2"></table>
+          </div>
+          <div class="col-xs-12 text-center m-t m-b">
+            <button class="btn btn-primary" type="button" @click="saveRole">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--角色弹窗 end-->
+
+      <!--团队弹窗-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="teamBox">
+          <div class="col-xs-12 text-center m-t">
+            <div class="col-xs-5 text-center">
+              <label class="input-label">团队</label>
+            </div>
+            <select class="col-xs-7 input-select" v-model="selectTeam">
+              <option value="">选择团队</option>
+              <option v-for="item in teamData" :value="item.id" v-text="item.name"></option>
+            </select>
+          </div>
+          <div class="col-xs-12 text-center m-t m-b">
+            <button class="btn btn-primary" type="button" @click="saveTeam">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--团队弹窗 end-->
+
+      <!--设置渠道号-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="channelBox">
+          <div class="col-xs-12 text-center m-t">
+            <div class="col-xs-5 text-center">
+              <label class="input-label">推广渠道号</label>
+            </div>
+            <input class="col-xs-7 input-item" type="text" v-model="channelNum">
+          </div>
+          <div class="col-xs-12 text-center m-t m-b">
+            <button class="btn btn-primary" type="button" @click="saveChannelNum">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--设置渠道号 end-->
+
+      <!--新增账户弹窗-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="accountBox">
+          <div class="col-xs-12 text-center m-t">
+            <div class="col-xs-5 text-center">
+              <label class="input-label">账户分类</label>
+            </div>
+            <select class="col-xs-7 input-select" v-model="addAccountType">
+              <option value="1">内部账号</option>
+              <option value="2">外部账号</option>
+            </select>
+          </div>
+          <template v-if="addAccountType == 1">
+            <div class="col-xs-12 text-center m-t">
+              <div class="col-xs-5 text-center">
+                <label class="input-label">用户</label>
+              </div>
+              <select class="col-xs-7 input-select" v-model="selectAccount">
+                <option value="">请选择</option>
+                <option v-for="item in accountData" :value="item.loginName" v-text="item.realName+ '('+ item.loginName + ')'"></option>
+              </select>
+            </div>
+          </template>
+          <template v-if="addAccountType == 2">
+            <div class="col-xs-12 text-center m-t">
+              <div class="col-xs-5 text-center">
+                <label class="input-label">账户名称</label>
+              </div>
+              <input class="col-xs-7 input-item" type="text" v-model="addAccountName">
+            </div>
+            <div class="col-xs-12 text-center m-t">
+              <div class="col-xs-5 text-center">
+                <label class="input-label">姓名</label>
+              </div>
+              <input class="col-xs-7 input-item" type="text" v-model="addAccountShowName">
+            </div>
+          </template>
+          <div class="col-xs-12 text-center m-t m-b">
+            <button class="btn btn-primary" type="button" @click="saveAccount">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--新增账户弹窗 end-->
+
+      <!--重置密码弹窗-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="pwdBox">
+          <div class="col-xs-12 text-center m-t">
+            <label class="col-xs-4">新密码</label>
+            <input class="col-xs-8 input-item" type="password" maxlength="16" v-model="newPassWord">
+          </div>
+          <div class="col-xs-12 text-center m-t m-b">
+            <label class="col-xs-4">确认新密码</label>
+            <input class="col-xs-8 input-item" type="password" maxlength="16" v-model="confirmPassWord">
+          </div>
+          <div class="col-xs-12 text-center m-t m-b">
+            <button class="btn btn-primary" type="button" @click="savePwd">保存</button>
+          </div>
+        </div>
+      </div>
+      <!--重置密码弹窗 end-->
+
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+
+  <script type="text/html" id="tp1">
+    {{# if(d.dimissionStatus == '0'){ return '正常'; }else{ return '离职'; } }}
+  </script>
+
+  <script type="text/html" id="tp2">
+    {{# if(d.status == '0'){ return '正常'; }else{ return '限制'; } }}
+  </script>
+
+  <script type="text/html" id="tp3">
+    {{# if(d.roleName){ return '<span title="' + d.roleName +'">'+ d.roleName + '</span>'; }else{ return ''; } }}
+  </script>
+
+  <script type="text/html" id="tp4">
+    {{# if(d.accountClass == '1'){ return '内部账号'; }else{ return '外部账号'; } }}
+  </script>
+
+  <script type="text/html" id="toolbar">
+    {{# if(d.seatNo){ return '<button class="search-btn small m-r unbindingBtn" type="button" lay-event="unbinding">解绑坐席号</button><button class="search-btn small reset m-r changeBtn" type="button" lay-event="change">更改坐席号</button>'; }else{ return '
+    <button class="search-btn small m-r bindingBtn" type="button" lay-event="binding">绑定坐席号</button><button class="search-btn small reset m-r changeBtn" type="button" lay-event="change">更改坐席号</button>'; } }}
+  </script>
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/md5.js"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/sys/account.js"></script>
+</body>
+
+</html>

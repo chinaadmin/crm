@@ -1,0 +1,210 @@
+#customerManage-my {
+    color: #8d9199!important;
+    
+    .range {
+        margin-top: 10px;
+        .crm-my-tab {
+            li {
+                display: inline-block;
+                padding: 10px 30px;
+                font-size: 14px;
+                color: #52565c;
+                cursor: pointer;
+                &.tab-active {
+                    color: #f2891b;
+                    border-bottom: 2px solid #f2891b;
+                }
+            }
+        }
+        .section {
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+                padding-left: 15px;
+                border: none;
+                outline: none;
+                &.mini {
+                    height: 90px;
+                }
+                .mini-box {
+                    padding: 0 0!important;
+                }
+                .right-box {
+                    padding-right: 0!important;
+                }
+                select {
+                    appearance:none;
+                    -moz-appearance:none;
+                    -webkit-appearance:none;
+                    width: 35px;
+                    height: 35px;
+                    background: url(../images/arrow.png) no-repeat 97% 50%;
+                }
+                .tel-box {
+                    width: 100%;
+                    background-color: #f0f0f2;
+                    height: 35px;
+                    line-height: 35px;
+                    border-radius: 5px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    padding-left: 8px;
+                    margin-bottom: 10px;
+                    color: #8d9199;
+                    border: none;
+                    outline: none;
+                    .select2-selection__rendered{
+                        color: #8d9199;
+                        font-weight: 700;
+                        line-height: 35px;
+                    }
+                     
+                    &[disabled]{
+                        opacity: 0.5;
+                        &:hover{
+                            cursor: not-allowed;
+                        }
+                    }
+                    .input-box {
+                        background-color: #f0f0f2;
+                        width: 65%;
+                        padding: 0 5px;
+                        font-weight: 100;
+                        border: none;
+                        outline: none;
+                        @media screen and (max-width:1366px) {
+                            width:50%;
+                            }
+                        }
+                    .input-box-s{
+                        background-color: #f0f0f2;
+                        width: 25%;
+                        padding: 0 5px;
+                        font-weight: 100;
+                        text-align: center;
+                        border: none;
+                        outline: none;
+                        &.small {
+                            width: 35%;
+                            @media screen and (max-width: 768px) {
+                            width: 30%;
+                            }
+                        }
+                        &.money {
+                            width: 33%
+                        }
+                        &.date {
+                            width: 75%;
+                            padding: 0 0;
+                            font-size: 12px;
+                            @media screen and (max-width: 768px) {
+                                width: 160px;
+                            }
+                            @media screen and (min-width: 1366px) {
+                                width: 80%;
+                            }
+                        }
+                        &.big{
+                            width: 38%;
+                            @media screen and (max-width: 768px) {
+                            width: 30%;
+                            }
+                        }
+                        &.querydate{
+                            width: 38%;
+                            @media screen and (max-width: 768px) {
+                            width: 30%;
+                            }
+                        }
+
+                    }
+                        
+                    }
+            }
+    }
+        .query {
+             padding-left: 30px;
+             padding-top: 10px;
+                }
+            button {
+                width: 100%;
+                height: 33px;
+                border-radius: 15px; 
+            }
+            .search {
+                width: 150px;
+                background: #f2891B;
+                color: white;
+                margin: 0 15px 0 0;
+                text-align: center;
+                outline: none;
+                border: none;
+            }
+            .reset {
+                width: 150px;
+                background: #ffffff;
+                border: 1px solid #f2891B;
+                color: #f2891b;
+                margin: 0 15px;
+                outline: none;
+                text-align: center;
+                }
+            .fold {
+                margin: 0 15px;
+                font-size: 14px;
+            }
+    
+    .line {
+        width: 100%;
+        // margin: 30px auto 10px;
+    }
+    .acount {
+        padding-left: 15px;
+    }
+    .table-s {
+        padding: 0 0!important;
+    }
+    .count {
+        color: #52565c;
+        font-size: 23px;
+        margin-top: 10px;
+        // margin-bottom: 20px;
+    }
+    @media screen and (max-width:768px) and (min-width: 305px) {
+        .reset {
+                width: 60px;
+                margin-top: 10px;
+            }
+        .search{
+            width: 60px;
+        }
+    }
+    @media screen and (max-width:768px) {
+        .reset {
+                width: 100px;
+                margin-top: 10px;
+            }
+        .search{
+            width: 100px;
+        }
+    }
+    @media screen and (max-width:768px) and (min-width: 1366px) {
+        .reset {
+                width: 150px;
+                margin-top: 10px;
+            }
+        .search{
+            width: 150px;
+        }
+    }
+    @media screen and (max-width:1366px) and (min-width: 1440px) {
+        .reset {
+                width: 150px;
+                margin-top: 10px;
+            }
+        .search{
+            width: 150px;
+        }
+    }
+    
+}

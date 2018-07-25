@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="remind">
+
+  <!-- loading -->
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid hide">
+    <div class="row">
+
+      <!-- search start-->
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">团队名称</label>
+        </div>
+        <input class="col-xs-8 input-item" type="text" v-model="query.name">
+      </div>
+
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">所属组织</label>
+        </div>
+        <select class="col-xs-8 input-select" v-model="query.orgId">
+          <option value="">请选择</option>
+          <option value="8">营销中心</option>
+        </select>
+      </div>
+
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t">
+        <div class="col-xs-4 text-center">
+          <label class="input-label">创建时间</label>
+        </div>
+        <input id="searchDate" class="col-xs-8 input-item date" type="text">
+      </div>
+
+      <div class="col-xs-12 col-md-4 col-lg-3 m-t text-center">
+        <button class="search-btn m-r" type="button" v-if="roles.teamBtnQuery.authorised" @click="searchData">查询</button>
+        <button class="search-btn reset m-r" type="button" v-if="roles.teamBtnQuery.authorised" @click="reset">重置</button>
+        <button class="search-btn m-l-lg" type="button" v-if="roles.teamAddUI.authorised" @click="openAddWin">新增</button>
+      </div>
+      <!-- search end-->
+
+      <div class="col-xs-12 m-t">
+        <table id="dataTable" lay-filter="dataTable"></table>
+      </div>
+
+      <!--添加团队-->
+      <div style="position:absolute;left:-1000px;">
+        <div id="editBox">
+          <div class="col-xs-12 m-t m-b text-center">
+
+            <div class="col-xs-6 p-none m-t">
+              <div class="col-xs-4 text-center p-none">
+                <label class="input-label">团队名称</label>
+              </div>
+              <input class="col-xs-8 input-item" type="text" v-model="addTeamData.name">
+            </div>
+
+            <div class="col-xs-6 p-none m-t">
+              <div class="col-xs-4 text-center p-none">
+                <label class="input-label">所属组织</label>
+              </div>
+              <select class="col-xs-8 input-select" v-model="addTeamData.orgId">
+                <option value="">请选择</option>
+                <option value="8">营销中心</option>
+              </select>
+            </div>
+
+            <div class="col-xs-12 p-none m-t">
+              <div class="col-xs-2 text-center p-none">
+                <label class="input-label">团队描述</label>
+              </div>
+              <div class="col-xs-10 p-none">
+                <textarea class="input-textarea" rows="5" v-model="addTeamData.description"></textarea>
+              </div>
+            </div>
+
+            <div class="col-xs-12 p-none m-t">
+              <button class="btn btn-primary" type="button" @click="addTeam">保存</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!--添加团队 end-->
+
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/sys/team.js"></script>
+</body>
+
+</html>

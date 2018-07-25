@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title>买金呗 CRM 后台管理</title>
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+    <script>
+        // 当前页面如果不在iframe中，则返回后台管理首页
+        if (top == this) {
+            window.location.href = "../index.html";
+        }
+    </script>
+
+    <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+    <!-- 框架及公用样式 -->
+    <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../public/hplus/css/animate.css" rel="stylesheet">
+    <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+    <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerDetail-assetView">
+    <div id="loading">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+
+    <!-- 内容主体 -->
+    <div class="container-fluid hide" id="app">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">资产总额:</div>
+                <div class="col-xs-6 border" v-text="table.assetTotal"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">可用余额:</div>
+                <div class="col-xs-6 border" v-text="table.usableBalance"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">冻结金额</div>
+                <div class="col-xs-6 border" v-text="table.freezeBalance"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">黄金总克重</div>
+                <div class="col-xs-6 border" v-text="table.totalGram"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">黄金冻结资产:</div>
+                <div class="col-xs-6 border" v-text="table.freezeGram"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-0 profit" style="height:30px;">
+            </div>
+            <div class="col-xs-12 profit" style="height:18px;"></div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">新手金总克重:</div>
+                <div class="col-xs-6 border" v-text="table.noviceGram"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">新手金昨日收益:</div>
+                <div class="col-xs-6 border" v-text="table.noviceInterestYesterday"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">新手金收益合计:</div>
+                <div class="col-xs-6 border" v-text="table.noviceTotalInterest"></div>
+            </div>
+            <div class="col-xs-12 profit" style="height:18px;"></div>            
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">金荷包总克重:</div>
+                <div class="col-xs-6 border" v-text="table.currentGram"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">金荷包昨日收益:</div>
+                <div class="col-xs-6 border" v-text="table.currentInterestYesterday"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">产品利率累计收益:</div>
+                <div class="col-xs-6 border" v-text="table.currentInterestTotal"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">昨日红包加息收益</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponYesterdayCurrent"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">累计加息收益:</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponCurrent"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">金荷包收益合计:</div>
+                <div class="col-xs-6 border" v-text="Number(table.currentInterestTotal)+Number(table.raiseInterestCouponCurrent)+Number(table.cashCouponCurrent)"></div>
+            </div>
+            <div class="col-xs-12 profit" style="height:18px;"></div>            
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">稳盈金总克重:</div>
+                <div class="col-xs-6 border" v-text="table.pledgeGram"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">稳盈金总金额:</div>
+                <div class="col-xs-6 border" v-text="table.pledgeGoldValue"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">稳盈金待收收益:</div>
+                <div class="col-xs-6 border" v-text="table.pledgeRecievedInterest">:</div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">稳盈金加息待收收益:</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponDueInPledge"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">累计加息收益:</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponPledge"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">产品利率累计收益</div>
+                <div class="col-xs-6 border"  v-text="table.pledgeInterestTotal"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money profit" style="height:30px;">
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">现金红包累计收益：</div>
+                <div class="col-xs-6 border" v-text="table.cashCouponPledge"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">稳盈金收益合计:</div>
+                <div class="col-xs-6 border" v-text="Number(table.pledgeInterestTotal)+Number(table.cashCouponPledge)+Number(table.raiseInterestCouponPledge)"></div>
+            </div>
+            <div class="col-xs-12 profit" style="height:18px;"></div>            
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">定期金总克重:</div>
+                <div class="col-xs-6 border" v-text="table.regularGram-table.noviceGram"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">定期金昨日收益:</div>
+                <div class="col-xs-6 border" v-text="table.regularInterestYesterday-table.noviceInterestYesterday"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">产品利率累计收益:</div>
+                <div class="col-xs-6 border" v-text="table.regularInterestTotal-table.noviceTotalInterest"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">定期金待收加息收益:</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponDueInRegular"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">累计加息收益:</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponRegular"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money profit" style="height:30px;">
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-0 money profit" style="height:30px;">
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">现金红包累计收益:</div>
+                <div class="col-xs-6 border" v-text="table.cashCouponRegular.toFixed(2 )"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">定期金收益合计:</div>
+                <div class="col-xs-6 border" v-text="Number(table.regularInterestTotal)-Number(table.noviceTotalInterest)+Number(table.cashCouponRegular)+Number(table.raiseInterestCouponRegular)"></div>
+            </div>
+            <div class="col-xs-12 profit" style="height:18px;"></div>            
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">看涨跌总金额:</div>
+                <div class="col-xs-6 border" v-text="table.risefallTotal"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">看涨跌待收最小收益:</div>
+                <div class="col-xs-6 border" v-text="table.risefallMinIncome"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">看涨跌待收最大收益:</div>
+                <div class="col-xs-6 border" v-text="table.risefallMaxIncome"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">看涨跌加息代收收益:</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponDueInRisefall"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">累计加息收益:</div>
+                <div class="col-xs-6 border" v-text="table.raiseInterestCouponRisefall"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">产品利率累计收益:</div>
+                <div class="col-xs-6 border" v-text="table.risefallTotalIncome"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money profit" style="height:32px;">
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">现金红包累计收益:</div>
+                <div class="col-xs-6 border" v-text="table.cashCouponRisefall"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">看涨跌收益合计:</div>
+                <div class="col-xs-6 border" v-text="Number(table.risefallTotalIncome)+Number(table.cashCouponRisefall)+Number(table.raiseInterestCouponRisefall)"></div>
+            </div>
+            <div class="col-xs-12 profit" style="height:30px;"></div>            
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">金饰现金红包收益合计:</div>
+                <div class="col-xs-6 border" v-text="table.cashCouponBullion"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">推荐奖励待收收益:</div>
+                <div class="col-xs-6 border" v-text="table.recommendIncomeDueIn"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">推荐奖励收益合计:</div>
+                <div class="col-xs-6 border" v-text="table.recommendIncomeReceived"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">特价金总克重:</div>
+                <div class="col-xs-6 border" v-text="table.specialGram"></div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money profit" style="height:30px;">
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 money">
+                <div class="col-xs-6 border grey">投资收益总计:</div>
+                <div class="col-xs-6 border" v-text="table.allTotalIncome"></div>
+            </div>
+        </div>
+    </div>
+    <!-- 内容主体 end-->
+
+    <!-- 全局js -->
+    <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+    <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="../public/lib/vue.js"></script>
+
+    <!-- layui -->
+    <script src="../public/lib/layui/layui.js"></script>
+    <script src="../public/js/global.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../public/js/page/customerDetail/assetView.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+  <script>
+    // 当前页面如果不在iframe中，则返回后台管理首页
+    if (top == this) {
+      window.location.href = "../index.html";
+    }
+  </script>
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body>
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid hide">
+    <div class="row">
+      <div class="col-sm-12">
+        <table id="callRecord" lay-filter="callRecord"></table>
+      </div>
+    </div>
+  </div>
+  <script type="text/html" id="result">
+    {{# var result={0:"未跟进",11:"成交-新转化",12:"成交-深挖",21:"待跟进-关机/无人接听",22:"待跟进-不方便接听",23:"待跟进-不需要/拒绝",24:"待跟进-跟家人/朋友商量",25:"待跟进 考虑/对比",26:"待跟进-促成/高意向",27:"待跟进 暂时不考虑/拒绝",31:"无效-空号/错号",32:"无效-黑名单"}; return result[d.result] || ''; }}
+  </script>
+  <script type="text/html" id="investIntention">
+    {{# var investIntention = {1:'高意向',2:'低意向'}; return investIntention[d.investIntention] || ''; }}
+  </script>
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/customerDetail/callRecord.js"></script>
+</body>
+
+</html>

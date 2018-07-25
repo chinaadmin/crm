@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+    <script>
+      if (top == this) {
+
+        window.location.href = "../index.html";
+        
+      }
+    </script>
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerManage-quit">
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div class="container-fluid hide"  id="app">
+    <div class="row">
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 cheek">
+        <div class="input-box">
+          <input type="text" placeholder="手机号码" class="base" v-model="table.cstMobile" id="demoReload" maxlength="11"  />
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 cheek">
+        <div class="input-box">
+          <input type="text" placeholder="姓名" class="base" v-model="table.cstName" />
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 cheek">
+        <div class="input-box">
+          <select class="base" v-model="table.flowStep">
+            <option value="-1">退出方式</option>
+            <option value="2">公司回收</option>
+            <option value="1">自然转化</option>
+            <option value="8">员工推荐</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 cheek">
+            <button type="button" class="search" id="searchAll" v-on:click="searchAll()">查询</button>
+            <button type="button" class="reset" v-on:click="emptyAll()">重置</button>
+      </div>
+      <!-- <div class="col-lg-2 col-md-2 cheek">
+         
+      </div> -->
+      </div>
+    </div>
+
+    <div class="col-xs-12">
+      <table id="demo" lay-filter="test" style="width: 100%"></table>
+    </div>
+    
+
+    <!-- 手机号码 -->
+    <script type="text/html" id="titleTpl">
+        {{#  var fn = function(){
+            d.mobilePhone = d.mobilePhone.substring(0,3) + '****' + d.mobilePhone.substring(7,11);  
+        };
+            fn();
+           return d.mobilePhone;
+      }} 
+    </script>
+
+    <!-- 退出方式 -->
+    <script type="text/html" id="statusTpl">
+        {{# if(d.flowStep == 1){ }} 
+          自然转化
+        {{#  }else if(d.flowStep == 2){ }}
+          公司回收
+        {{#  }else if(d.flowStep == 8){ }}
+          员工推荐
+        {{# }else{ }}
+          
+        {{# } }}
+    </script>
+    <!-- 注册时间 -->
+    <script type="text/html" id="tpfirst">
+              {{# var time = ''; if(d.registerTime) {time = d.registerTime.split(' ')[0] } ; return '<span '+ 'title="' + d.registerTime + '">'+ time + '</span>' }}
+        </script>
+    <script type="text/html" id="tpsecond">
+              {{# var time = ''; if(d.buyFirstTime) {time = d.buyFirstTime.split(' ')[0] } ; return '<span '+ 'title="' + d.buyFirstTime + '">'+ time + '</span>' }}
+          
+        </script>
+    <script type="text/html" id="tpthird">
+              {{# var time = ''; if(d.lastFollowTime) {time = d.lastFollowTime.split(' ')[0] } ; return '<span '+ 'title="' + d.lastFollowTime + '">'+ time + '</span>' }}
+              
+        </script>
+    <script type="text/html" id="tpforth">
+             {{# var time = ''; if(d.distributeTime) {time = d.distributeTime.split(' ')[0] } ; return '<span '+ 'title="' + d.distributeTime + '">'+ time + '</span>' }}
+                  
+         </script>
+  
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- vue.js -->
+  <script src="../public/lib/vue.js"></script>
+  
+  <!-- 自定义js -->
+  <script src="../public/js/page/customerManage/quit.js"></script>
+  
+</body>
+
+</html>

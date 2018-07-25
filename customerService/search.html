@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerService-search">
+
+  <!-- 内容主体 -->
+  <div id="content" class="container-fluid" @keyup.enter="searchData">
+    <div class="row">
+
+      <div class="col-sm-4 col-md-4 col-lg-3 search-box center">
+        <input class="col-xs-8 p-r-none search" type="text" placeholder="客户手机号/客户姓名" v-model="search">
+        <div class="col-xs-4 p-none">
+          <button class="search-btn" type="button" @click="searchData">
+            <i class="fa fa-search"></i> 查询
+          </button>
+        </div>
+      </div>
+
+      <div class="col-xs-12 m-t">
+        <table id="dataTable" lay-filter="dataTable"></table>
+      </div>
+
+    </div>
+  </div>
+  <!-- 内容主体 end-->
+
+  <!-- 模板 -->
+
+  <script type="text/html" id="tp1">
+    {{# return '<a><i class="fa fa-volume-control-phone" style="color:#299b96;"></i></a>'; }}
+  </script>
+
+  <script type="text/html" id="tp2">
+    {{# var fn = function(){ d.mobilePhone = d.mobilePhone.substring(0,3) + '****' + d.mobilePhone.substring(7,11); }; fn(); return '<a>'+ d.mobilePhone +'</a>'; }}
+  </script>
+
+  <script type="text/html" id="tp3">
+    {{# return d.customerStatus == '10' ? '正常':'禁用' }}
+  </script>
+
+  <script type="text/html" id="tp4">
+    {{# var time = ''; if(d.registerTime) {time = d.registerTime.split(' ')[0]} ; return '<span '+ 'title="' + d.registerTime + '">'+ time + '</span>' }}
+  </script>
+
+  <script type="text/html" id="tp5">
+    {{# var time = ''; if(d.lastDate) {time = d.lastDate.split(' ')[0]} ; return '<span '+ 'title="' + d.lastDate + '">'+ time + '</span>' }}
+  </script>
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+
+  <!-- Vue -->
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/customerService/search.js"></script>
+</body>
+
+</html>

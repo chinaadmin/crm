@@ -1,0 +1,103 @@
+#categories{
+
+  button{
+    &:active,&:focus{
+      outline: none;
+    }
+  }
+
+  .fa{
+    margin-right: 5px;
+    vertical-align: middle;
+    &:hover{
+      cursor: pointer;
+    }
+  }
+
+  .btn{
+    padding:0 20px;
+    height: 30px;
+    background-color: #f2891b;
+    color: #ffffff;
+    border: none;
+    border-radius: 15px;
+
+    &.white{
+      background-color: #ffffff;
+      color: #f2891b;
+      border: 1px solid #f2891b;
+    }
+
+    &.small{
+      padding: 0 10px;
+      height: 20px;
+      line-height: 10px;
+      font-size: 14px;
+    }
+
+  }
+
+  .text-center{
+    text-align: center !important;
+  }
+
+  .tree{
+    width: 100%;
+
+    .child{
+      width: 100%;
+  
+      div{
+        padding: 10px;
+        min-height: 42px;
+        line-height: 18px;
+        float: left;
+        border: 1px solid #f0f0f2;
+        text-align: center;
+
+        &.td1{
+          width:30%;
+          .type-title{
+            &:hover{
+              cursor: pointer;
+            }
+          }
+        }
+        &.td2{width:20%;}
+        &.td3{width:20%;}
+        &.td4{width:30%;}
+      }
+
+    }
+  }
+
+  .tree1{
+    padding: 10px 10px 10px 20px !important;
+    text-align: left !important;
+  }
+
+  .tree2{
+    padding:10px 10px 10px 40px !important;
+    text-align: left !important;
+  }
+
+  .tree3{
+    padding: 10px 10px 10px 70px !important;
+    text-align: left !important;
+  }
+
+  #editBox{
+    .input-label{
+      padding: 0 0;
+      line-height: 30px;
+      text-align: center;
+    }
+
+    .input-item{
+      padding: 0 0;
+      height: 30px;
+      border: 1px solid #f0f0f2;
+    }
+  }
+
+}

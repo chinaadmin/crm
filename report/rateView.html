@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="report-rateView">
+  <div id="loading">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+
+  <!-- 内容主体 -->
+  <div class="container-fluid hide" id="app">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>渠道号</label>
+            <input type="text" class="input-box" v-model="account.channelNum">
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>渠道名称</label>
+            <input type="text" class="input-box" v-model="account.channelRealName">
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <button class="search" @click="researchTable">查询</button>
+          <button class="reset fold" @click="resetTable">重置</button>
+        </div>
+        <div class="col-xs-12">
+          <table id="rateView" lay-filter="rateView"></table>
+        </div>
+      </div>
+      <div style="position:absolute;left:-500px;">
+        <div class="column" id="column">
+          <div class="col-xs-12 m-t">
+            <span class="all">渠道号:</span>
+            <span>{{channelData.channelNum}}</span>
+          </div>
+          <div class="col-xs-12 m-t">
+            <span class="all">渠道系数:</span>
+            <input type="text" class="status" v-model="channelData.channelLevel">
+          </div>
+          <div class="col-xs-12 m-t">
+            <div id="aaselect">
+              <span class="all">状态:</span>
+              <select class="status" v-model="channelData.status">
+                <option value="10">启用</option>
+                <option value="20">停用</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-xs-12 m-t">
+            <div class="change">
+              <button type="button" class="changeData" @click="change">保存</button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+    
+    
+
+    
+  <!-- 内容主体 end-->
+  <script type="text/html" id="tp1">
+    {{# var type ={10:'启用',20:'停用'};
+      return type[d.status] || '';
+  }}
+  </script>
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/js/page/report/rateView.js"></script>
+</body>
+
+</html>

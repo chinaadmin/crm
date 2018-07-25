@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM 后台管理</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+  <script>
+    // 当前页面如果不在iframe中，则返回后台管理首页
+    if (top == this) {
+      window.location.href = "../index.html";
+    }
+   </script>
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+
+  <!-- 框架及公用样式 -->
+  <link href="../public/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="../public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../public/hplus/css/animate.css" rel="stylesheet">
+  <link href="../public/lib/layui/css/layui.css" rel="stylesheet">
+  <link rel="stylesheet" href="../public/lib/select2/select2.min.css">
+  <link href="../public/hplus/css/style.css" rel="stylesheet">
+
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="../public/style/output.css">
+</head>
+
+<body id="customerManage-my">
+
+<div id="loading">
+  <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+</div>
+
+  <!-- 内容主体 -->
+  <div class="container-fluid range hide" id="customer">
+    <div class="row">
+      <div class="col-xs-12 m-b-sm">
+        <ul class="crm-my-tab">
+          <li :class="isActive == true? 'tab-active' : ''" @click="callStatusChange(2)">未拨</li>
+          <li :class="isActive == false? 'tab-active' : ''" @click="callStatusChange(1)">已拨</li>
+        </ul>
+      </div>
+      <section class="section" :class="{mini: queryMini === true}">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>手机</label>
+            <input type="text" class="input-box" v-model="table.cstMobile">
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>姓名</label>
+            <input type="text" class="input-box" v-model="table.cstName">
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <select class="tel-box" v-model="table.cstSex">
+            <option value="-1">性别</option>
+            <option value="10">男</option>
+            <option value="20">女</option>
+          </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>年龄范围</label>
+            <input type="text" class="input-box-s small" v-model="table.cstStartAge">–
+            <input type="text" class="input-box-s small" v-model="table.cstEndAge">
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>归属地</label>
+            <input type="text" class="input-box" v-model="table.homeLocation">
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <select v-model="table.cstState" class="tel-box">
+            <option value="-1">客户状态</option>
+            <option value="10">未实名</option>
+            <option value="30">已投资</option>
+            <option value="20">未投资</option>
+          </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <select class="tel-box" v-model="table.isNew">
+            <option value="-1">客户类型</option>
+            <option value="0">新客户</option> 
+            <option value="1">休眠客户</option>
+          </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>账户总额</label>
+            <input type="text" class="input-box-s money" v-model="table.accountStartBalance" />–
+            <input type="text" class="input-box-s money" v-model="table.accountEndBalance" />
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="tel-box">
+            <label>注册时间</label>
+            <input type="text" class="input-box-s big" id="registerStartTime"/> –
+            <input type="text" class="input-box-s big" id="registerEndTime">
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="tel-box">
+            <label>首投时间</label>
+            <input type="text" class="input-box-s big" id="firstThrowStartTime" /> –
+            <input type="text" class="input-box-s big" id="firstThrowEndTime" />            
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="tel-box">
+            <label>首次投定</label>
+            <input type="text" class="input-box-s big" id="firstRegularStartTime" /> –
+            <input type="text" class="input-box-s big" id="firstRegularEndTime" />
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="tel-box">
+            <label>登录时间</label>
+            <input type="text" class="input-box-s big" id="loginStartTime" /> –
+            <input type="text" class="input-box-s big" id="loginEndTime" />
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>登录次数</label>
+            <input type="text" class="input-box-s small" v-model="table.loginNumberStart"> –
+            <input type="text" class="input-box-s small" v-model="table.loginNumberEnd">
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="tel-box">
+            <label>调配时间</label>
+            <input type="text" class="input-box-s big" id="adjustStartTime" /> –
+            <input type="text" class="input-box-s big" id="adjustEndTime" />
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="tel-box">
+            <label>充值时间</label>
+            <input type="text" class="input-box-s big" id="rechargeStartTime" /> –
+            <input type="text" class="input-box-s big" id="rechargeEndTime" />
+          </div>
+        </div>
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+              <select class="tel-box" v-model="table.rechargeState">
+                <option value="-1">充值状态</option>
+                <option value="21">充值成功</option>
+                <option value="22">充值失败</option>
+              </select>
+          </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="tel-box">
+            <label>上次回访</label>
+            <input type="text" class="input-box-s big" id="lastVisitStart" /> –
+            <input type="text" class="input-box-s big" id="lastVisitEnd" />
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 right-box">
+          <select class="tel-box" id="lastFollower">
+            <option></option>
+            <option value="-1">无</option>
+            <option v-for="item in lastFollowerNameData" :value="item.realName" v-text="item.realName"></option>
+          </select>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <select class="tel-box" v-model="table.nvestmentIntent">
+            <option value="-1">投资意向</option>
+            <option value="1">高意向</option>
+            <option value="2">低意向</option>
+          </select>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mini-box">
+            <select class="tel-box" v-model="table.followResultType">
+              <option value="-1">跟进状态</option>
+              <option value="1">待跟进</option>
+              <option value="2">成交</option>
+              <option value="3">无效</option>
+            </select>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 right-box">
+            <select class="tel-box" v-model="table.followResult">
+              <option value="-1">跟进结果</option>
+              <option value="21" v-if="table.followResultType == 1">关机/无人接听</option>
+              <option value="22" v-if="table.followResultType == 1">不方便接听</option>
+              <option value="23" v-if="table.followResultType == 1">不需要/拒绝</option>
+              <option value="24" v-if="table.followResultType == 1">跟家人/朋友商量</option>
+              <option value="25" v-if="table.followResultType == 1">考虑/对比</option>
+              <option value="26" v-if="table.followResultType == 1">促成/新意向</option>
+              <option value="27" v-if="table.followResultType == 1">暂时不考虑/拒绝</option>
+              <option value="11" v-if="table.followResultType == 2">新转化</option>
+              <option value="12" v-if="table.followResultType == 2">深挖</option>
+              <option value="31" v-if="table.followResultType == 3">空号/错号</option>
+              <option value="32" v-if="table.followResultType == 3">黑名单</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+          <div class="tel-box">
+            <label>跟进次数</label>
+            <input type="text" class="input-box-s small" v-model="table.followStartTimes">–
+            <input type="text" class="input-box-s small" v-model="table.followEndTimes">
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="col-xs-4 mini-box">
+              <select v-model="table.channelType" class="tel-box">
+              <option value="-1">渠道</option>
+              <option value="10">有-渠道</option>
+              <option value="20">无-渠道</option>
+            </select>
+          </div>
+          <div class="col-xs-8 right-box">
+            <input type="text" class="tel-box" v-model="table.channelName" :disabled="table.channelType == -1">
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="col-xs-4 mini-box">
+              <select v-model="table.recommenderType" class="tel-box">
+                <option value="-1">推荐人</option>
+                <option value="10">有-推荐人</option>
+                <option value="20">无-推荐人</option>
+              </select>
+          </div>
+          <div class="col-xs-8 right-box">
+            <input type="text" class="tel-box" v-model="table.recommenderName" :disabled="table.recommenderType == -1">
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mini-box">
+            <select class="tel-box" v-model="table.orderName">
+              <option value="-1">排序列</option>
+              <option value="1">账户总额</option>
+              <option value="2">最近登录时间</option>
+              <option value="3">上次回访时间</option>
+              <option value="4">首次投资时间</option>
+            </select>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 right-box">
+            <select class="tel-box" v-model="table.orderby">
+              <option value="-1">排序方式</option>
+              <option value="2">升序</option>
+              <option value="-1">降序</option>
+            </select>
+          </div>         
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+          <div class="tel-box">
+            <label>客户分组</label>
+            <input type="text" class="input-box" v-model="table.groupName">
+          </div>
+        </div>
+      </section>
+      <div class="col-xs-12 query">
+        <button type="button" class="search" @click="researchForm">查询</button>
+        <button type="button" class="reset" @click="resetForm">重置</button>
+        <span class="fold" @click="queryToggle">折叠
+          <i class="fa fa-lg" :class="{'fa-angle-down':queryMini === true,'fa-angle-up':queryMini === false}"></i>
+        </span>
+      </div>
+    </div>
+    <div class="col-xs-12 line table-s">
+      <hr/>
+    </div>
+    <div class="row acount">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+          <p>账户总额(元)</p>
+          <p class="count">{{mount.accountAmount}}</p>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+          <p>账户余额(元)</p>
+          <p class="count">{{mount.usableBalance}}</p>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+          <p>黄金克重(克)</p>
+          <p class="count">{{mount.totalGram}}</p>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+          <P>金荷包克重(克)</P>
+          <p class="count">{{mount.currentGram}}</p>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-6">
+          <p>待收总额(元)</p>
+          <p class="count">{{mount.risefallHold}}</p>
+        </div>
+        
+        <!-- 组别及组员数据 -->
+
+        <div id="treeBox" style="position:absolute;left:-500px;">
+          <div id="selectTeam">
+            <vtree ref="vtree" :rowdata="teamData" :callback="selectTeam"></vtree>
+          </div>
+        </div>
+        <!-- 组别及组员数据 end -->
+    </div>
+    <div class="col-xs-12 table-s">
+      <table id="myCustomer" lay-filter="test"></table>
+    </div>
+    
+  </div>
+  <!-- 外呼 -->
+  <script type="text/html" id="tp1">
+      {{# return '<a><i class="fa fa-volume-control-phone" style="color:#299b96;"></i></a>'; }}
+    </script>
+  <!-- 手机号码 -->
+   <script type="text/html" id="titleTpl">
+      {{#  var fn = function(){
+            d.mobilePhone = d.mobilePhone.substring(0,3) + '****' + d.mobilePhone.substring(7,11)
+        };
+            fn();
+           return '<a>'+ d.mobilePhone +'</a>';
+      }}
+  </script>
+  <!-- 性别 -->
+  <script type="text/html" id="gender">
+    {{# if(d.gender == '10'){ }}
+                男
+          {{# }else if(d.gender == '20'){ }}
+                女
+       {{# } }}
+  
+  </script>
+  <!-- 跟进状态 -->
+    <script type="text/html" id="followUp">
+
+      {{# var status = {'0':'未跟进','11':'成交-新转化','12':'成交-深挖','21':'待跟进-关机/无人接听',
+      '22':'待跟进-不方便接听','23':'待跟进-不需要/拒绝','24':'待跟进-跟家人/朋友商量','25':'待跟进-考虑/对比',
+      '26':'待跟进-促成/高意向','27':'待跟进-暂时不考虑/拒绝','31':'无效-空号/错号','32':'无效-黑名单'}; 
+
+      return status[d.followUpResult] || ''; }}
+
+    </script>
+    <!-- 客户状态 -->
+    <script type="text/html" id="cstState">
+        {{# if(d.cstState == '10'){ }}
+                未实名
+          {{#}else if(d.cstState == '20'){ }}
+                未投资
+         {{# }else if(d.cstState == '30'){ }}
+                已投资
+       {{# } }}
+    
+    </script>
+    <!-- 注册时间 -->
+    <script type="text/html" id="tpfirst">
+          {{# var time = ''; if(d.registerTime) {time = d.registerTime.split(' ')[0] } ; return '<span '+ 'title="' + d.registerTime + '">'+ time + '</span>' }}
+    </script>
+    <script type="text/html" id="tpsecond">
+          {{# var time = ''; if(d.buyFirstTime) {time = d.buyFirstTime.split(' ')[0] } ; return '<span '+ 'title="' + d.buyFirstTime + '">'+ time + '</span>' }}
+      
+    </script>
+    <script type="text/html" id="tpthird">
+          {{# var time = ''; if(d.lastFollowTime) {time = d.lastFollowTime.split(' ')[0] } ; return '<span '+ 'title="' + d.lastFollowTime + '">'+ time + '</span>' }}
+          
+    </script>
+     <script type="text/html" id="tpforth">
+         {{# var time = ''; if(d.lastDate) {time = d.lastDate.split(' ')[0] } ; return '<span '+ 'title="' + d.lastDate + '">'+ time + '</span>' }}
+              
+     </script>
+     <script type="text/html" id="tp2">
+        {{# var time="";if(d.firstRegularBuyTime) {time = d.firstRegularBuyTime.split(' ')[0] };return '<span title="'+ d.firstRegularBuyTime+ '">'+ time  +'</span>'}} ;
+    </script>
+  <!-- 内容主体 end-->
+
+  <!-- 全局js -->
+  <script src="../public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="../public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="../public/lib/select2/select2.full.js"></script>
+
+  <!-- layui -->
+  <script src="../public/lib/layui/layui.js"></script>
+  <script src="../public/js/global.js"></script>
+
+  <!-- vue -->
+  <script src="../public/lib/vue.js"></script>
+
+  <!-- 自定义js -->
+  <script src="../public/components/vue-tree.js"></script>
+  <script src="../public/js/page/customerManage/my.js"></script>
+</body>
+
+</html>
