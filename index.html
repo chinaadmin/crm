@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>买金呗 CRM - 后台管理首页</title>
+
+  <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+  <![endif]-->
+
+  <link type="image/x-icon" rel="shortcut icon" href="https://www.maijinbei.com/static/images/favicon.ico" />
+  <!-- 框架及公用样式 -->
+  <link href="public/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="public/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="public/hplus/css/animate.css" rel="stylesheet">
+  <link href="public/hplus/css/style.css" rel="stylesheet">
+  <!-- 自定义样式 -->
+  <link rel="stylesheet" href="public/style/output.css">
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+  <div id="wrapper">
+    <!--左侧导航 -->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+      <!-- loading -->
+      <div class="sidebar-collapse">
+        <ul id="side-menu" class="nav hide">
+          <li class="nav-header"></li>
+          <!-- 天润工具条 -->
+          <li class="tr-tool" v-if="permissions.toolbarIframe && permissions.toolbarIframe.authorised">
+            <i class="fa fa-angle-left fa-2x navbar-minimalize"></i>
+            <button class="tr-login" type="button" @click="openToolbarLoginBox">
+              <i class="fa fa-user-o fa-lg"></i>
+            </button>
+            <div class="tr-btn-group">
+              <template v-if="toolbarIsLogin">
+                <div v-if="initStatus === 'online'">
+                  <i class="fa fa-user fa-lg" title="空闲"></i>
+                  <i class="fa fa-minus fa-lg disabled" title="置闲"></i>
+                  <i class="fa fa-check fa-lg" title="置忙" @click="toolbarPause"></i>
+                  <i class="fa fa-times fa-lg" title="呼叫取消" @click="stopCall"></i>
+                  <i class="fa fa-power-off fa-lg" title="挂断" @click="hangUpCall"></i>
+                </div>
+                <div v-else>
+                  <i class="fa fa-user fa-lg disabled" title="置忙"></i>
+                  <i class="fa fa-minus fa-lg" title="置闲" @click="toolbarUnPause"></i>
+                  <i class="fa fa-check fa-lg disabled" title="置忙"></i>
+                  <i class="fa fa-times fa-lg" title="呼叫取消" @click="stopCall"></i>
+                  <i class="fa fa-power-off fa-lg" title="挂断" @click="hangUpCall"></i>
+                </div>
+              </template>
+              <template v-else>
+                <i class="fa fa-user-times fa-lg disabled" title="离线"></i>
+                <i class="fa fa-minus fa-lg disabled" title="置闲"></i>
+                <i class="fa fa-check fa-lg disabled" title="置忙"></i>
+                <i class="fa fa-times fa-lg disabled" title="呼叫取消"></i>
+                <i class="fa fa-power-off fa-lg disabled" title="挂断" @click="hangUpCall"></i>
+              </template>
+            </div>
+          </li>
+          <!-- 天润工具条 end-->
+
+          <li class="tr-tool" v-else>
+            <i class="fa fa-angle-left fa-2x navbar-minimalize no-role"></i>
+          </li>
+
+          <!-- 左侧导航菜单 start-->
+          <template v-if="menuList.length != 0" v-for="(item,itemIndex) in menuList">
+            <li :class="{active: itemIndex === 0}">
+              <a @click="toggleMenu">
+                <i class="fa" :class="item.icon"></i>
+                <span class="nav-label" v-text="item.name"></span>
+                <span class="fa arrow"></span>
+              </a>
+              <ul class="nav nav-second-level" :style="{display: itemIndex === 0 ? 'block':'none'}"> 
+                <li v-for="(child,childIndex) in item.children">
+                  <a v-if="itemIndex === 0 && childIndex === 0" class="J_menuItem active" :href="child.href+'?id='+child.id" :data-id="child.href+'?id='+child.id">
+                    <span class="J_menuItem_name" v-text="child.name"></span>
+                  </a>
+                  <a v-else class="J_menuItem" :href="child.href+'?id='+child.id">
+                    <span class="J_menuItem_name" v-text="child.name"></span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </template>
+          <!-- 左侧导航菜单 end-->
+        </ul>
+      </div>
+
+      <!-- 天润登录box -->
+      <div class="tr-login-box animated hide">
+        <a><i class="fa fa-times fa-lg" @click="hideToolbarLoginBox"></i></a>
+
+        <form role="form">
+          <div class="form-group">
+            <input type="text" placeholder="热线号码" class="form-control" v-model="hotLine">
+          </div>
+          <div class="form-group">
+            <input type="text" placeholder="坐席号" class="form-control" v-model="cno" readonly>
+          </div>
+          <div class="form-group">
+            <input type="password" placeholder="请输入密码" class="form-control" v-model="pwd">
+          </div>
+          <div class="form-group">
+            <input type="text" placeholder="绑定电话" class="form-control" v-model="bindTel">
+          </div>
+          <div class="form-group">
+            <select class="form-control" v-model="bindType">
+              <option value="1">电话号码</option>
+              <option value="2">分机号码</option>
+              <option value="4">远程坐席话机</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select class="form-control" v-model="initStatus">
+              <option value="online">空闲</option>
+              <option value="pause">置忙</option>
+            </select>
+          </div>
+          <div class="login-btn-group">
+            <button class="btn btn-md btn-rounded btn-warning" type="button" @click="toolbarLogin">
+              <strong>登录</strong>
+            </button>
+            <button class="btn btn-md btn-rounded btn-default" type="button" @click="toolbarLoginOut">
+              <strong>退出</strong>
+            </button>
+          </div>
+        </form>
+
+      </div>
+      <!-- 天润登录box end-->
+    </nav>
+    <!--左侧导航 end-->
+
+    <!--右侧部分 -->
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+
+      <!-- 右侧头部-->
+      <div class="row border-bottom">
+        <nav id="task-notice" class="navbar navbar-static-top m-b-none">
+
+          <div class="row roastingList">
+            <div class="col-xs-2 p-none text-center">
+              <i class="fa fa-volume-up"></i>
+            </div>
+            <div class="col-xs-10 p-none">
+              <marquee id="rechargeMarquee"></marquee>
+            </div>
+          </div>
+
+          <ul class="nav navbar-top-links navbar-right">
+            <li class="dropdown" :class="{'open':showRemind}" v-if="permissions.remindNum && permissions.remindNum.authorised">
+              <a class="dropdown-toggle count-info" @mouseover="showRemindList" @mouseout="showRemind = false">
+                <i class="fa fa-calendar-check-o fa-lg"></i>
+                <span class="label" v-show="remindCount > 0" v-text="remindCount >= 100 ? '99+' : remindCount"></span>
+              </a>
+              <ul class="dropdown-menu dropdown-alerts" @mouseover="showRemind = true" @mouseout="showRemind = false">
+                <li v-for="item in remindList">
+                  <a class="J_menuItem" :href="item.frontHref + '?id=' + item.id">
+                    <div class="notice-title">
+                      <span class="J_menuItem_name" v-text="item.name"></span>
+                      <span class="notice-num" v-show="item.count > 0" v-text="item.count >= 100 ? '99+' : item.count"></span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                <i class="fa fa-user-circle fa-lg"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-alerts">
+                <li>
+                  <a class="userInfo" v-text="userInfo.loginName+'('+userInfo.realName+')'"></a>
+                </li>
+                <li>
+                  <a @click="changePwd">
+                    <div>
+                      <span>修改密码</span>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a @click="loginout">
+                    <div>
+                      <span>安全退出</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- tabs 选项 -->
+      <div class="row content-tabs">
+        <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i></button>
+        <nav class="page-tabs J_menuTabs">
+          <div class="page-tabs-content">
+            <a href="javascript:;" class="active J_menuTab" :data-id="activeMenuUrl" v-text="activeMenuName"></a>
+          </div>
+        </nav>
+        <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i></button>
+        <div class="btn-group roll-nav roll-right">
+          <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span></button>
+          <ul role="menu" class="dropdown-menu dropdown-menu-right">
+            <li class="J_tabShowActive"><a>定位当前选项卡</a>
+            </li>
+            <li class="divider"></li>
+            <li class="J_tabCloseAll"><a>关闭全部选项卡</a>
+            </li>
+            <li class="J_tabCloseOther"><a>关闭其他选项卡</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- iframe 内容 -->
+      <div class="row J_mainContent" id="content-main">
+        <iframe class="J_iframe" name="iframe0" width="100%" height="100%" :src="activeMenuUrl" frameborder="0" :data-id="activeMenuUrl" seamless></iframe>
+      </div>
+
+    </div>
+    <!--右侧部分 end-->
+  </div>
+
+  <!-- 修改密码弹窗表单 -->
+  <form id="changeForm" class="hide">
+    <div class="form-group">
+      <input type="password" class="form-control input-lg newPwd" placeholder="新密码" required="" name="userName">
+    </div>
+    <div class="form-group">
+      <input type="password" class="form-control input-lg newPwd2" placeholder="确认密码" required="" name="passWord">
+    </div>
+    <div class="col-xs-12 p-none">
+      <div class="alert alert-danger m-b-none hide"></div>
+    </div>
+  </form>
+
+  <!-- 全局js -->
+  <script src="public/hplus/js/jquery.min.js?v=2.1.4"></script>
+  <script src="public/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+  <script src="public/hplus/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+  <script src="public/hplus/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+  <script src="public/hplus/js/plugins/layer/layer.js"></script>
+  <script src="public/lib/md5.js"></script>
+
+  <!-- H+ js -->
+  <script src="public/hplus/js/hplus.js?v=4.1.0"></script>
+  <script src="public/hplus/js/contabs.js"></script>
+
+  <!-- vue -->
+  <script src="public/lib/vue.js"></script>
+
+  <!-- 项目相关配置 -->
+  <script src="public/js/conf.js"></script>
+  <script src="public/js/utilFn.js"></script>
+
+  <script type="text/javascript">
+    //动态引入天润工具JS文件
+    var version = new Date().getTime();
+
+    var CCIC2_TOOLBAR_URL = 'http://agent.clink.cn'; //api.clink.cn
+    document.write("<script src='" + CCIC2_TOOLBAR_URL + "/jws/sourceCode/ccic2Toolbar.js?version=" + version + "' charset='UTF-8'><\/script>");
+  </script>
+
+  <!-- 页面逻辑js -->
+  <script src="public/js/page/index.js"></script>
+</body>
+
+</html>
